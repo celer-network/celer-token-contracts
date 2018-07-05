@@ -8,6 +8,13 @@ contract AbstractTimelock is Ownable {
   using SafeERC20 for ERC20Basic;
   using SafeMath for uint;
 
+  event NewRelease(
+    address beneficiary,
+    uint amount
+  );
+
+  event ZeroReleasableAmount();
+
   event Activate(
       uint startTime
   );
@@ -94,8 +101,16 @@ contract AbstractTimelock is Ownable {
       lockups[finalIndex].isReleased = true;
     }
 
-    require(releasableAmount > 0);
-    releasedAmount = releasedAmount.add(releasableAmount);
-    token.safeTransfer(beneficiary, releasableAmount);
+    if (releasableAmount > 0) {
+      emit NewRelease(beneficiary, releasableAmount);
+      releasedAmount = releasedAmount.add(releasableAmount);
+      token.safeTransfer(beneficiary, releasableAmount);
+      return;
+    } else if (releasableAmount == 0) {
+      emit ZeroReleasableAmount();
+      return;
+    } else {
+      assert(false);
+    }
   }
 }
