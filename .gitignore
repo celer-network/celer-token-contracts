@@ -101,3 +101,5 @@ ENV/
 
 node_modules/
 package-lock.json
+
+contracts/*.backup.sol
