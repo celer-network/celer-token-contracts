@@ -40,7 +40,7 @@ contract AngelTimelock is AbstractTimelock {
       totalDivisor: 6
     }));
 
-    require(lockups.length == 4);
+    assert(lockups.length == 4);
   }
 
   function resetStartTime(uint _startTime) onlyOwner whenActivated returns (bool) {

@@ -30,6 +30,6 @@ contract PrivateSaleTimelock is AbstractTimelock {
       totalDivisor: 3
     }));
 
-    require(lockups.length == 3);
+    assert(lockups.length == 3);
   }
 }
