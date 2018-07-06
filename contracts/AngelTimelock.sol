@@ -43,10 +43,11 @@ contract AngelTimelock is AbstractTimelock {
     assert(lockups.length == 4);
   }
 
-  function resetStartTime(uint _startTime) onlyOwner whenActivated returns (bool) {
-    require(_startTime > block.timestamp);
+  function resetStartTime(uint _newStartTime) onlyOwner whenActivated returns (bool) {
+    require(_newStartTime != startTime);
+    require(_newStartTime > block.timestamp);
 
-    startTime = _startTime;
+    startTime = _newStartTime;
     emit ResetStartTime(startTime);
     return true;
   }

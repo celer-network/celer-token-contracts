@@ -2,6 +2,7 @@ pragma solidity ^0.4.23;
 
 import "openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 
 contract AbstractTimelock is Ownable {
@@ -72,16 +73,18 @@ contract AbstractTimelock is Ownable {
     return true;
   }
 
-  function resetBeneficiary(address _beneficiary) onlyOwner returns (bool) {
-    beneficiary = _beneficiary;
+  function resetBeneficiary(address _newBeneficiary) onlyOwner returns (bool) {
+    require(_newBeneficiary != beneficiary);
+
+    beneficiary = _newBeneficiary;
     emit ResetBeneficiary(beneficiary);
     return true;
   }
 
   function release() public whenActivated {
     uint releasableAmount = 0;
-    uint balance = token.balanceOf(this);
-    uint total = balance.add(releasedAmount);
+    uint unreleasedAmount = token.balanceOf(this);
+    uint totalAmount = unreleasedAmount.add(releasedAmount);
 
     uint releaseTime;
     uint finalIndex = lockups.length.sub(1);
@@ -89,7 +92,7 @@ contract AbstractTimelock is Ownable {
     for (uint i = 0; i < finalIndex; i++) {
       releaseTime = startTime.add(lockups[i].lockupTime);
       if (block.timestamp >= releaseTime && !lockups[i].isReleased) {
-        uint amount = total.div(lockups[i].totalDivisor);
+        uint amount = totalAmount.div(lockups[i].totalDivisor);
         releasableAmount = releasableAmount.add(amount);
         lockups[i].isReleased = true;
       }
@@ -97,7 +100,7 @@ contract AbstractTimelock is Ownable {
     // check the final lockup period
     releaseTime = startTime.add(lockup[finalIndex].lockupTime);
     if (block.timestamp >= releaseTime && !lockups[finalIndex].isReleased) {
-      releasableAmount = balance;
+      releasableAmount = unreleasedAmount;
       lockups[finalIndex].isReleased = true;
     }
 
