@@ -1,6 +1,6 @@
 pragma solidity ^0.4.23;
 
-import "openzeppelin-solidity/contracts/token/ERC20/PausableToken.sol";
+import "./lib/external/openzeppelin-solidity/contracts/token/ERC20/PausableToken.sol";
 
 
 contract CelerToken is PausableToken {
