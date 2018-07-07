@@ -5,7 +5,7 @@ import "./lib/external/openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "./lib/external/openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 
-contract AbstractTimelock is Ownable {
+contract CelerTimelock is Ownable {
   using SafeERC20 for ERC20Basic;
   using SafeMath for uint;
 
@@ -32,7 +32,7 @@ contract AbstractTimelock is Ownable {
 
   ERC20Basic public token;
   address public beneficiary;
-  Lockup[] public lockups;
+  Lockup[3] public lockups;
   bool public isActivated;
   uint public startTime;
   uint public releasedAmount;
@@ -51,10 +51,23 @@ contract AbstractTimelock is Ownable {
     ERC20Basic _token,
     address _beneficiary
   )
-    internal
+    public
   {
     token = _token;
     beneficiary = _beneficiary;
+
+    // period 0: at the end of 3rd month, unlock 1/3
+    lockups[0].lockupTime = 90 days;
+    lockups[0].isReleased = false;
+    lockups[0].totalDivisor = 3;
+    // period 1: at the end of 6th month, unlock additional 1/3
+    lockups[1].lockupTime = 180 days;
+    lockups[1].isReleased = false;
+    lockups[1].totalDivisor = 3;
+    // period 2: at the end of 9th month, unlock additional 1/3
+    lockups[2].lockupTime = 270 days;
+    lockups[2].isReleased = false;
+    lockups[2].totalDivisor = 3;
   }
 
   function activateNow() onlyOwner whenNotActivated returns (bool) {
