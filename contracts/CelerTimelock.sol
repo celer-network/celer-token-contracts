@@ -111,7 +111,7 @@ contract CelerTimelock is Ownable {
       }
     }
     // check the final lockup period
-    releaseTime = startTime.add(lockup[finalIndex].lockupTime);
+    releaseTime = startTime.add(lockups[finalIndex].lockupTime);
     if (block.timestamp >= releaseTime && !lockups[finalIndex].isReleased) {
       releasableAmount = unreleasedAmount;
       lockups[finalIndex].isReleased = true;
