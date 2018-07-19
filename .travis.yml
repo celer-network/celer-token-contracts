@@ -13,7 +13,7 @@ install:
   - npm install -g ganache-cli
   
 script:
-  - ganache-cli
+  - ganache-cli 2> /dev/null 1> /dev/null &
   - sleep 5
   - rm -rf build
   - truffle compile --all
