@@ -1,4 +1,4 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.4.24;
 
 import "./lib/external/openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
 import "./lib/external/openzeppelin-solidity/contracts/math/SafeMath.sol";
