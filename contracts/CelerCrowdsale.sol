@@ -63,4 +63,28 @@ contract CelerCrowdsale is PausableCrowdsale, StagedMaxCapCrowdsale, MinCapCrowd
   {
   }
 
+  /**
+   * @dev Sets the number of token units a buyer gets per wei.
+   * @param _rate Number of token units a buyer gets per wei
+   * Require: onlyOwner; check _rate > 0; can set only before openingTime
+   */
+  function setRate(uint256 _rate) external onlyOwner {
+    require(_rate > 0);
+    require(now < openingTime);
+
+    rate = _rate;
+  }
+
+  /**
+   * @dev Sets the max cap of each user in first stage.
+   * @param _originalMaxCap Max cap of each user in first stage
+   * Require: onlyOwner; check _originalMaxCap > 0; can set only before openingTime
+   */
+  function setOriginalMaxCap(uint256 _originalMaxCap) external onlyOwner {
+    require(_originalMaxCap > 0);
+    require(now < openingTime);
+
+    originalMaxCap = _originalMaxCap;
+  }
+
 }
