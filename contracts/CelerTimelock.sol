@@ -70,14 +70,14 @@ contract CelerTimelock is Ownable {
     lockups[2].totalDivisor = 3;
   }
 
-  function activateNow() onlyOwner whenNotActivated returns (bool) {
+  function activateNow() onlyOwner whenNotActivated public returns (bool) {
     isActivated = true;
     startTime = block.timestamp;
     emit Activate(startTime);
     return true;
   }
 
-  function activateWithTime(uint _startTime) onlyOwner whenNotActivated returns (bool) {
+  function activateWithTime(uint _startTime) onlyOwner whenNotActivated public returns (bool) {
     require(_startTime > block.timestamp);
 
     isActivated = true;
@@ -86,7 +86,7 @@ contract CelerTimelock is Ownable {
     return true;
   }
 
-  function resetBeneficiary(address _newBeneficiary) onlyOwner returns (bool) {
+  function resetBeneficiary(address _newBeneficiary) onlyOwner public returns (bool) {
     require(_newBeneficiary != beneficiary);
 
     beneficiary = _newBeneficiary;
@@ -94,7 +94,7 @@ contract CelerTimelock is Ownable {
     return true;
   }
 
-  function release() public whenActivated {
+  function release() whenActivated public {
     uint releasableAmount = 0;
     uint unreleasedAmount = token.balanceOf(this);
     uint totalAmount = unreleasedAmount.add(releasedAmount);
