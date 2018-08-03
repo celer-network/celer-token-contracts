@@ -16,9 +16,9 @@ contract CelerCrowdsale is PausableCrowdsale, StagedMaxCapCrowdsale, MinCapCrowd
     uint256 _openingTime, 
     uint256 _closingTime,
     uint256 _originalMaxCap, 
-    uint256 _stageDuration,
-    uint256 _minCap,
-    uint256 _maxGasPrice,
+    // uint256 _stageDuration,
+    // uint256 _minCap,
+    // uint256 _maxGasPrice,
     address _tokenWallet
   )
     public
@@ -39,21 +39,21 @@ contract CelerCrowdsale is PausableCrowdsale, StagedMaxCapCrowdsale, MinCapCrowd
     /**
      * @dev Constructor, takes individual max cap of first stage and duration of each stage
      * @param _originalMaxCap Max cap of each user in first stage
-     * @param _stageDuration Duration of each stage
+     * @param _stageDuration Duration of each stage -> hardcoded as 12 hours
      */
-    StagedMaxCapCrowdsale(_originalMaxCap, _stageDuration)
+    StagedMaxCapCrowdsale(_originalMaxCap, 12 hours)
     
     /**
      * @dev Constructor, takes minimum amount of wei accepted for each user in the crowdsale.
-     * @param _minCap Min amount of wei to be contributed for each user
+     * @param _minCap Min amount of wei to be contributed for each user -> hardcoded as 0.001 ether 
      */
-    MinCapCrowdsale(_minCap)
+    MinCapCrowdsale(0.001 ether)
     
     /**
      * @dev Constructor, takes maximum gas price accepted for each purchase.
-     * @param _maxGasPrice Max gas price for each purchase transaction
+     * @param _maxGasPrice Max gas price for each purchase transaction -> hardcoded as 50000000000 (50 Gwei)
      */
-    MaxGasPriceCrowdsale(_maxGasPrice)
+    MaxGasPriceCrowdsale(50000000000)
     
     /**
      * @dev Constructor, takes token wallet address.
@@ -62,5 +62,5 @@ contract CelerCrowdsale is PausableCrowdsale, StagedMaxCapCrowdsale, MinCapCrowd
     AllowanceCrowdsale(_tokenWallet)
   {
   }
-  
+
 }
