@@ -78,7 +78,8 @@ contract CelerTimelock is Ownable {
   }
 
   function activateWithTime(uint _startTime) onlyOwner whenNotActivated public returns (bool) {
-    require(_startTime > now);
+    // require(_startTime > now);
+    require(_startTime > 0);
 
     isActivated = true;
     startTime = _startTime;
