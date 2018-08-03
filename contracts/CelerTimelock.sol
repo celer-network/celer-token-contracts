@@ -72,13 +72,13 @@ contract CelerTimelock is Ownable {
 
   function activateNow() onlyOwner whenNotActivated public returns (bool) {
     isActivated = true;
-    startTime = block.timestamp;
+    startTime = now;
     emit Activate(startTime);
     return true;
   }
 
   function activateWithTime(uint _startTime) onlyOwner whenNotActivated public returns (bool) {
-    require(_startTime > block.timestamp);
+    require(_startTime > now);
 
     isActivated = true;
     startTime = _startTime;
@@ -104,7 +104,7 @@ contract CelerTimelock is Ownable {
     // check lockup periods except the final one
     for (uint i = 0; i < finalIndex; i++) {
       releaseTime = startTime.add(lockups[i].lockupTime);
-      if (block.timestamp >= releaseTime && !lockups[i].isReleased) {
+      if (now >= releaseTime && !lockups[i].isReleased) {
         uint amount = totalAmount.div(lockups[i].totalDivisor);
         releasableAmount = releasableAmount.add(amount);
         lockups[i].isReleased = true;
@@ -112,7 +112,7 @@ contract CelerTimelock is Ownable {
     }
     // check the final lockup period
     releaseTime = startTime.add(lockups[finalIndex].lockupTime);
-    if (block.timestamp >= releaseTime && !lockups[finalIndex].isReleased) {
+    if (now >= releaseTime && !lockups[finalIndex].isReleased) {
       releasableAmount = unreleasedAmount;
       lockups[finalIndex].isReleased = true;
     }
