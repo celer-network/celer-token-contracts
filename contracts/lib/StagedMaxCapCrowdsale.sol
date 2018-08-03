@@ -15,6 +15,11 @@ contract StagedMaxCapCrowdsale is TimedCrowdsale, ContributionsCrowdsale {
   uint256 public originalMaxCap; // in wei unit
   uint256 public stageDuration; // duration time of one stage
 
+  /**
+   * @dev Constructor, takes individual max cap of first stage and duration of each stage
+   * @param _originalMaxCap Max cap of each user in first stage
+   * @param _stageDuration Duration of each stage
+   */
   constructor(uint256 _originalMaxCap, uint256 _stageDuration) public {
     require(_originalMaxCap > 0);
     require(_stageDuration > 0);

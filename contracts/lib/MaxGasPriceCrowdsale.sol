@@ -11,8 +11,8 @@ contract MaxGasPriceCrowdsale is Crowdsale {
   uint256 public maxGasPrice; // in wei unit
 
   /**
-   * @dev Constructor, takes maximum amount of wei of gas price accepted for each purchase.
-   * @param _maxGasPrice Max amount of wei of gas price for each purchase transaction
+   * @dev Constructor, takes maximum gas price accepted for each purchase.
+   * @param _maxGasPrice Max gas price for each purchase transaction
    */
   constructor(uint256 _maxGasPrice) public {
     require(_maxGasPrice > 0);
