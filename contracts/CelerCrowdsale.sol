@@ -4,7 +4,6 @@ import "./lib/PausableCrowdsale.sol";
 import "./lib/StagedMaxCapCrowdsale.sol";
 import "./lib/MinCapCrowdsale.sol";
 import "./lib/MaxGasPriceCrowdsale.sol";
-// import "./lib/external/openzeppelin-solidity/contracts/crowdsale/validation/WhitelistedCrowdsale.sol";
 import "./lib/SuccinctWhitelistedCrowdsale.sol";
 import "./lib/external/openzeppelin-solidity/contracts/crowdsale/emission/AllowanceCrowdsale.sol";
 import "./lib/external/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
