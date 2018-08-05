@@ -8,6 +8,7 @@ import "./lib/SuccinctWhitelistedCrowdsale.sol";
 import "./lib/external/openzeppelin-solidity/contracts/crowdsale/emission/AllowanceCrowdsale.sol";
 import "./lib/external/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
+
 /**
  * @title CelerCrowdsale
  * @dev CelerCrowdsale is the crowdsale contract for Celer Network.

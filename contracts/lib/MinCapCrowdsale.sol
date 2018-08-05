@@ -3,6 +3,7 @@ pragma solidity ^0.4.24;
 import "./external/openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "./ContributionsCrowdsale.sol";
 
+
 /**
  * @title MinCapCrowdsale
  * @dev ContributionsCrowdsale with a min cap for each individual user.
