@@ -7,17 +7,17 @@ import "./lib/external/openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract CelerTimelock is Ownable {
   using SafeERC20 for ERC20Basic;
-  using SafeMath for uint;
+  using SafeMath for uint256;
 
   event NewRelease(
     address beneficiary,
-    uint amount
+    uint256 amount
   );
 
   event ZeroReleasableAmount();
 
   event Activate(
-      uint startTime
+      uint256 startTime
   );
 
   event ResetBeneficiary(
@@ -25,17 +25,17 @@ contract CelerTimelock is Ownable {
   );
 
   struct Lockup {
-      uint lockupTime;
+      uint256 lockupTime;
       bool isReleased;
-      uint totalDivisor;
+      uint256 totalDivisor;
   }
 
   ERC20Basic public token;
   address public beneficiary;
   Lockup[3] public lockups;
   bool public isActivated;
-  uint public startTime;
-  uint public releasedAmount;
+  uint256 public startTime;
+  uint256 public releasedAmount;
 
   modifier whenActivated() {
     require(isActivated);
@@ -77,7 +77,7 @@ contract CelerTimelock is Ownable {
     return true;
   }
 
-  function activateWithTime(uint _startTime) onlyOwner whenNotActivated public returns (bool) {
+  function activateWithTime(uint256 _startTime) onlyOwner whenNotActivated public returns (bool) {
     // require(_startTime > now);
     require(_startTime > 0);
 
@@ -96,17 +96,17 @@ contract CelerTimelock is Ownable {
   }
 
   function release() whenActivated public {
-    uint releasableAmount = 0;
-    uint unreleasedAmount = token.balanceOf(this);
-    uint totalAmount = unreleasedAmount.add(releasedAmount);
+    uint256 releasableAmount = 0;
+    uint256 unreleasedAmount = token.balanceOf(this);
+    uint256 totalAmount = unreleasedAmount.add(releasedAmount);
 
-    uint releaseTime;
-    uint finalIndex = lockups.length.sub(1);
+    uint256 releaseTime;
+    uint256 finalIndex = lockups.length.sub(1);
     // check lockup periods except the final one
-    for (uint i = 0; i < finalIndex; i++) {
+    for (uint256 i = 0; i < finalIndex; i++) {
       releaseTime = startTime.add(lockups[i].lockupTime);
       if (now >= releaseTime && !lockups[i].isReleased) {
-        uint amount = totalAmount.div(lockups[i].totalDivisor);
+        uint256 amount = totalAmount.div(lockups[i].totalDivisor);
         releasableAmount = releasableAmount.add(amount);
         lockups[i].isReleased = true;
       }

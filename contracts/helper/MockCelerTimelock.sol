@@ -5,7 +5,7 @@ import "../lib/external/openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 
 contract MockCelerTimelock is CelerTimelock {
-  using SafeMath for uint;
+  using SafeMath for uint256;
 
   constructor(
     ERC20Basic _token,
@@ -16,7 +16,7 @@ contract MockCelerTimelock is CelerTimelock {
   {
   }
 
-  function timeTravel(uint secs) external {
+  function timeTravel(uint256 secs) external {
     startTime = startTime.sub(secs);
   }
 }
