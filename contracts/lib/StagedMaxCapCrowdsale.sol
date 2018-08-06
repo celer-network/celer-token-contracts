@@ -34,8 +34,8 @@ contract StagedMaxCapCrowdsale is TimedCrowdsale, ContributionsCrowdsale {
    * namely the index of the initial (first) stage is 1.
    * @return Current stage index
    */
-  function getCurrentStageIndex() public view returns (uint256) {
-    uint256 timeAfterOpening = now - openingTime;
+  function getCurrentStageIndex() onlyWhileOpen public view returns (uint256) {
+    uint256 timeAfterOpening = now.sub(openingTime);
     // division always truncates: http://solidity.readthedocs.io/en/v0.4.24/types.html#integers
     uint256 tmp = timeAfterOpening.div(stageDuration);
     uint256 index = tmp.add(1);
