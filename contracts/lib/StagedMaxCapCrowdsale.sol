@@ -12,26 +12,26 @@ import "./ContributionsCrowdsale.sol";
 contract StagedMaxCapCrowdsale is TimedCrowdsale, ContributionsCrowdsale {
   using SafeMath for uint256;
 
-  uint256 public originalMaxCap; // in wei unit
+  uint256 public initialMaxCap; // in wei unit
   uint256 public stageDuration; // duration time of one stage
 
   /**
    * @dev Constructor, takes individual max cap of first stage and duration of each stage
-   * @param _originalMaxCap Max cap of each user in first stage
+   * @param _initialMaxCap Max cap of each user in first stage
    * @param _stageDuration Duration of each stage
    */
-  constructor(uint256 _originalMaxCap, uint256 _stageDuration) public {
-    require(_originalMaxCap > 0);
+  constructor(uint256 _initialMaxCap, uint256 _stageDuration) public {
+    require(_initialMaxCap > 0);
     require(_stageDuration > 0);
 
-    originalMaxCap = _originalMaxCap;
+    initialMaxCap = _initialMaxCap;
     stageDuration = _stageDuration;
   }
 
   /**
    * @dev Returns the stage index at the present time.
    * Note that, stage index begins from 1 and increases one by one,
-   * namely the index of the original (first) stage is 1.
+   * namely the index of the initial (first) stage is 1.
    * @return Current stage index
    */
   function getCurrentStageIndex() public view returns (uint256) {
@@ -49,7 +49,7 @@ contract StagedMaxCapCrowdsale is TimedCrowdsale, ContributionsCrowdsale {
   function getCurrentMaxCap() public view returns (uint256) {
     uint256 index = getCurrentStageIndex();
     uint256 times = 2 ** (index.sub(1));
-    uint256 currentMaxCap = originalMaxCap.mul(times);
+    uint256 currentMaxCap = initialMaxCap.mul(times);
     return currentMaxCap;
   }
 

@@ -20,7 +20,7 @@ contract CelerCrowdsale is PausableCrowdsale, StagedMaxCapCrowdsale, MinCapCrowd
     ERC20 _token,
     uint256 _openingTime, 
     uint256 _closingTime,
-    uint256 _originalMaxCap, 
+    uint256 _initialMaxCap, 
     // uint256 _stageDuration,
     // uint256 _minCap,
     // uint256 _maxGasPrice,
@@ -43,10 +43,10 @@ contract CelerCrowdsale is PausableCrowdsale, StagedMaxCapCrowdsale, MinCapCrowd
 
     /**
      * @dev Constructor, takes individual max cap of first stage and duration of each stage
-     * @param _originalMaxCap Max cap of each user in first stage
+     * @param _initialMaxCap Max cap of each user in first stage
      * @param _stageDuration Duration of each stage -> hardcoded as 12 hours
      */
-    StagedMaxCapCrowdsale(_originalMaxCap, 12 hours)
+    StagedMaxCapCrowdsale(_initialMaxCap, 12 hours)
     
     /**
      * @dev Constructor, takes minimum amount of wei accepted for each user in the crowdsale.
@@ -82,14 +82,14 @@ contract CelerCrowdsale is PausableCrowdsale, StagedMaxCapCrowdsale, MinCapCrowd
 
   /**
    * @dev Sets the max cap of each user in first stage.
-   * @param _originalMaxCap Max cap of each user in first stage
-   * Require: onlyOwner; check _originalMaxCap > 0; can set only before openingTime
+   * @param _initialMaxCap Max cap of each user in first stage
+   * Require: onlyOwner; check _initialMaxCap > 0; can set only before openingTime
    */
-  function setOriginalMaxCap(uint256 _originalMaxCap) external onlyOwner {
-    require(_originalMaxCap > 0);
+  function setInitialMaxCap(uint256 _initialMaxCap) external onlyOwner {
+    require(_initialMaxCap > 0);
     require(now < openingTime);
 
-    originalMaxCap = _originalMaxCap;
+    initialMaxCap = _initialMaxCap;
   }
 
 }
