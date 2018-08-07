@@ -54,17 +54,6 @@ contract StagedMaxCapCrowdsale is TimedCrowdsale, ContributionsCrowdsale {
   }
 
   /**
-   * @dev Returns the amount contributed so far by a sepecific user.
-   * @param _beneficiary Address of contributor
-   * @return User contribution so far
-   */
-  function getUserContribution(address _beneficiary)
-    public view returns (uint256)
-  {
-    return contributions[_beneficiary];
-  }
-
-  /**
    * @dev Extend parent behavior requiring purchase to respect the user's funding max cap.
    * @param _beneficiary Token purchaser
    * @param _weiAmount Amount of wei contributed
