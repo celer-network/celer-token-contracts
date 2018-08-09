@@ -524,6 +524,10 @@ contract PausableToken is StandardToken, Pausable {
 }
 
 
+/**
+ * @title CelerToken
+ * @dev Celer Network's token contract.
+ */
 contract CelerToken is PausableToken, SuccinctWhitelist {
   string public constant name = "CelerToken";
   string public constant symbol = "CELR";

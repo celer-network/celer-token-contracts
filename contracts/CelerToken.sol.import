@@ -4,6 +4,10 @@ import "./lib/external/openzeppelin-solidity/contracts/token/ERC20/PausableToken
 import "./lib/SuccinctWhitelist.sol";
 
 
+/**
+ * @title CelerToken
+ * @dev Celer Network's token contract.
+ */
 contract CelerToken is PausableToken, SuccinctWhitelist {
   string public constant name = "CelerToken";
   string public constant symbol = "CELR";

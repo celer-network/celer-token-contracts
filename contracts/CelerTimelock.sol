@@ -5,6 +5,10 @@ import "./lib/external/openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "./lib/external/openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 
+/**
+ * @title CelerTimelock
+ * @dev Token Timelock contract specialized for Celer's angel and private sale rounds.
+ */
 contract CelerTimelock is Ownable {
   using SafeERC20 for ERC20Basic;
   using SafeMath for uint256;
