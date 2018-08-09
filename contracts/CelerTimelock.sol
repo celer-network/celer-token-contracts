@@ -53,6 +53,9 @@ contract CelerTimelock is Ownable {
   )
     public
   {
+    require(_token != address(0));
+    require(_beneficiary != address(0));
+
     token = _token;
     beneficiary = _beneficiary;
 
@@ -88,6 +91,7 @@ contract CelerTimelock is Ownable {
   }
 
   function resetBeneficiary(address _newBeneficiary) onlyOwner public returns (bool) {
+    require(_newBeneficiary != address(0));
     require(_newBeneficiary != beneficiary);
 
     beneficiary = _newBeneficiary;
