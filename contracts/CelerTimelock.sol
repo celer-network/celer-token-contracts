@@ -17,25 +17,25 @@ contract CelerTimelock is Ownable {
   event ZeroReleasableAmount();
 
   event Activate(
-      uint256 startTime
+    uint256 startTime
   );
 
   event ResetBeneficiary(
-      address beneficiary
+    address beneficiary
   );
-
-  struct Lockup {
-      uint256 lockupTime;
-      bool isReleased;
-      uint256 totalDivisor;
-  }
 
   ERC20Basic public token;
   address public beneficiary;
-  Lockup[3] public lockups;
   bool public isActivated;
   uint256 public startTime;
   uint256 public releasedAmount;
+  /** 
+  * 1st stage: at the end of 3rd month, unlock 1/3
+  * 2nd stage: at the end of 6th month, unlock additional 1/3
+  * 3rd stage: at the end of 9th month, unlock additional 1/3
+  */
+  uint256[3] public lockupTimes = [90 days, 180 days, 270 days];
+  uint256 public constant eachReleaseDivisor = 3;
 
   modifier whenActivated() {
     require(isActivated);
@@ -58,19 +58,6 @@ contract CelerTimelock is Ownable {
 
     token = _token;
     beneficiary = _beneficiary;
-
-    // stage 0: at the end of 3rd month, unlock 1/3
-    lockups[0].lockupTime = 90 days;
-    lockups[0].isReleased = false;
-    lockups[0].totalDivisor = 3;
-    // stage 1: at the end of 6th month, unlock additional 1/3
-    lockups[1].lockupTime = 180 days;
-    lockups[1].isReleased = false;
-    lockups[1].totalDivisor = 3;
-    // stage 2: at the end of 9th month, unlock additional 1/3
-    lockups[2].lockupTime = 270 days;
-    lockups[2].isReleased = false;
-    lockups[2].totalDivisor = 3;
   }
 
   function activateNow() onlyOwner whenNotActivated public returns (bool) {
@@ -81,7 +68,6 @@ contract CelerTimelock is Ownable {
   }
 
   function activateWithTime(uint256 _startTime) onlyOwner whenNotActivated public returns (bool) {
-    // require(_startTime > now);
     require(_startTime > 0);
 
     isActivated = true;
@@ -99,39 +85,53 @@ contract CelerTimelock is Ownable {
     return true;
   }
 
-  function release() whenActivated public {
-    uint256 releasableAmount = 0;
-    uint256 unreleasedAmount = token.balanceOf(this);
+  function getUnlockedStagesNumber() public view returns (uint256) {
+    if (!isActivated) {
+      return 0;
+    }
+
+    if (now < (startTime + lockupTimes[0])) {
+      return 0;
+    } else if ((startTime + lockupTimes[0]) <= now && now < (startTime + lockupTimes[1])) {
+      return 1;
+    } else if ((startTime + lockupTimes[1]) <= now && now < (startTime + lockupTimes[2])) {
+      return 2;
+    } else if ((startTime + lockupTimes[2]) <= now) {
+      return 3;
+    } else {
+      assert(false);
+    }
+  }
+
+  function getReleasableAmount() public view returns (uint256) {    
+    uint256 unreleasedAmount = token.balanceOf(address(this));
     uint256 totalAmount = unreleasedAmount.add(releasedAmount);
+    
+    // unlocked means it (a stage or amount) has been unlocked and it can be released or has been released.
+    // Thus, unlockedAmount = releasedAmount + releasableAmount
+    uint256 unlockedStagesNumber = getUnlockedStagesNumber();
+    uint256 unlockedAmount = totalAmount.mul(unlockedStagesNumber).div(eachReleaseDivisor);
 
-    uint256 releaseTime;
-    uint256 finalIndex = lockups.length.sub(1);
-    // check lockup stages except the final one
-    for (uint256 i = 0; i < finalIndex; i++) {
-      releaseTime = startTime.add(lockups[i].lockupTime);
-      if (now >= releaseTime && !lockups[i].isReleased) {
-        uint256 amount = totalAmount.div(lockups[i].totalDivisor);
-        releasableAmount = releasableAmount.add(amount);
-        lockups[i].isReleased = true;
-      }
-    }
-    // check the final lockup stage
-    releaseTime = startTime.add(lockups[finalIndex].lockupTime);
-    if (now >= releaseTime && !lockups[finalIndex].isReleased) {
-      releasableAmount = unreleasedAmount;
-      lockups[finalIndex].isReleased = true;
-    }
+    uint256 releasableAmount = unlockedAmount.sub(releasedAmount);
+    return releasableAmount;
+  }
 
-    if (releasableAmount > 0) {
-      emit NewRelease(beneficiary, releasableAmount);
-      releasedAmount = releasedAmount.add(releasableAmount);
-      token.safeTransfer(beneficiary, releasableAmount);
+  function _releaseTokens(uint256 _releasableAmount) internal {
+    if (_releasableAmount > 0) {
+      emit NewRelease(beneficiary, _releasableAmount);
+      releasedAmount = releasedAmount.add(_releasableAmount);
+      token.safeTransfer(beneficiary, _releasableAmount);
       return;
-    } else if (releasableAmount == 0) {
+    } else if (_releasableAmount == 0) {
       emit ZeroReleasableAmount();
       return;
     } else {
       assert(false);
     }
+  }
+
+  function release() whenActivated public {
+    uint256 releasableAmount = getReleasableAmount();
+    _releaseTokens(releasableAmount);
   }
 }

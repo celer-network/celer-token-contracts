@@ -156,7 +156,7 @@ contract('CelerTimelock', async accounts => {
     assert.equal(beneficiary, accounts[2]);
   });
 
-  it('should fail to release before the end of the 1st lockup even when activated', async () => {
+  it('should fail to release before the end of the 1st lockup stage even when activated', async () => {
     let beneficiaryBalance;
     const beneficiary = await celerTimelock.beneficiary();
     beneficiaryBalance = await celerToken.balanceOf(beneficiary);
@@ -170,7 +170,7 @@ contract('CelerTimelock', async accounts => {
     assert.equal(event, 'ZeroReleasableAmount');
   });
 
-  it('should release correctly after the end of the 1st lockup', async () => {
+  it('should release correctly after the end of the 1st lockup stage', async () => {
     await celerTimelock.timeTravel(91 * SECONDS_IN_A_DAY);
 
     let beneficiaryBalance;
@@ -197,7 +197,7 @@ contract('CelerTimelock', async accounts => {
     assert.equal(releasedAmount.toString(), args.amount.toString());
   });
 
-  it('should fail to release twice after the end of the 1st lockup', async () => {
+  it('should fail to release twice after the end of the 1st lockup stage', async () => {
     const beneficiary = await celerTimelock.beneficiary();
     const beneficiaryBalanceOld = await celerToken.balanceOf(beneficiary);
 
@@ -209,7 +209,7 @@ contract('CelerTimelock', async accounts => {
     assert.equal(event, 'ZeroReleasableAmount');
   });
 
-  it('should release all tokens correctly after the end of all lockups', async () => {
+  it('should release all tokens correctly after the end of all lockup stages', async () => {
     await celerTimelock.timeTravel(180 * SECONDS_IN_A_DAY);
 
     const beneficiary = await celerTimelock.beneficiary();
@@ -235,7 +235,7 @@ contract('CelerTimelock', async accounts => {
     assert.equal(unreleasedAmount.toString(), '0');
   });
 
-  it('should fail to release anymore tokens after the final (total) release', async () => {
+  it('should fail to release anymore tokens after the total release', async () => {
     const beneficiary = await celerTimelock.beneficiary();
     const beneficiaryBalanceOld = await celerToken.balanceOf(beneficiary);
 
@@ -265,7 +265,7 @@ contract('CelerTimelock', async accounts => {
     assert.isOk(err instanceof Error);
   });
 
-  it('should fail to release when not activated even after lockup(s)', async () => {
+  it('should fail to release when not activated even after lockup stage(s)', async () => {
     let err = null;
     const startTime = await celerTimelockNew.startTime();
     // current startTime should be 0, and if startTime is 0, now must be after all lockups
@@ -322,7 +322,7 @@ contract('CelerTimelock', async accounts => {
     assert.isOk(err instanceof Error);
   });
 
-  it('should release correctly after the end of the 2nd lockup', async () => {
+  it('should release correctly after the end of the 2nd lockup stage', async () => {
     await celerToken.transfer(celerTimelockNew.address, totalAmount);
     const unreleasedAmount = await celerToken.balanceOf(celerTimelockNew.address);
     assert.equal(totalAmount.toString(), unreleasedAmount.toString());
