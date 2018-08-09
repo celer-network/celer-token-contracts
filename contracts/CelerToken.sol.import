@@ -1,0 +1,72 @@
+pragma solidity ^0.4.24;
+
+import "./lib/external/openzeppelin-solidity/contracts/token/ERC20/PausableToken.sol";
+import "./lib/SuccinctWhitelist.sol";
+
+
+contract CelerToken is PausableToken, SuccinctWhitelist {
+  string public constant name = "CelerToken";
+  string public constant symbol = "CELR";
+  uint256 public constant decimals = 18;
+
+  // 10 billion tokens with 18 decimals
+  uint256 public constant INITIAL_SUPPLY = 1e28;
+
+  // Indicate whether token transferability is opened to everyone
+  bool public transferOpened = false;
+
+  modifier onlyIfTransferable() {
+    require(transferOpened || whitelisted[msg.sender] || msg.sender == owner);
+    _;
+  }
+
+  modifier onlyValidReceiver(address _to) {
+    require(_to != address(this));
+    _;
+  }
+
+  constructor() public {
+    totalSupply_ = INITIAL_SUPPLY;
+    balances[msg.sender] = INITIAL_SUPPLY;
+  }
+
+  /** 
+   * @dev Extend parent behavior requiring transfer
+   * to respect transferability and receiver's validity.
+   */
+  function transfer(
+    address _to,
+    uint256 _value
+  )
+    public
+    onlyIfTransferable
+    onlyValidReceiver(_to)
+    returns (bool)
+  {
+    return super.transfer(_to, _value);
+  }
+
+  /** 
+   * @dev Extend parent behavior requiring transferFrom
+   * to respect transferability and receiver's validity.
+   */
+  function transferFrom(
+    address _from,
+    address _to,
+    uint256 _value
+  )
+    public
+    onlyIfTransferable
+    onlyValidReceiver(_to)
+    returns (bool)
+  {
+    return super.transferFrom(_from, _to, _value);
+  }
+
+  /** 
+   * @dev Open token transferability.
+   */
+  function openTransfer() external onlyOwner {
+    transferOpened = true;
+  }
+}
