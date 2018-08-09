@@ -29,6 +29,10 @@ contract('CelerCrowdsale', async accounts => {
       toWei('0.1', 'ether'), // will be modified in a early test case
       TOKEN_WALLET
     );
+
+    await celerToken.addAddressToWhitelist(celerCrowdsale.address);
+    const result = await celerToken.whitelist(celerCrowdsale.address);
+    assert.equal(result.toString(), 'true');
   });
 
   // -----------------------------------------
@@ -909,8 +913,8 @@ contract('CelerCrowdsale', async accounts => {
     assert.isOk(err instanceof Error);
 
     // unpause()
+    await celerCrowdsale.pause();
     try {
-      await celerCrowdsale.pause();
       await celerCrowdsale.unpause(
         {
           from: accounts[2],
@@ -1037,6 +1041,51 @@ contract('CelerCrowdsale', async accounts => {
         from: accounts[5],
         gasPrice: toWei('50', 'gwei')
       });
+    } catch (error) {
+      err = error;
+    }
+    assert.isOk(err instanceof Error);
+  });
+
+  it('should fail to transfer for non-owner and non-whitelisted users when transfer not opened', async () => {
+    let err;
+    try {
+      const receipt = await celerToken.transfer(
+        accounts[2],
+        100,
+        {
+          from: accounts[1]
+        }
+      );
+    } catch (error) {
+      err = error;
+    }
+    assert.isOk(err instanceof Error);
+  });
+
+  it('should fail to transferFrom for non-owner and non-whitelisted users when transfer not opened', async () => {
+    let err;
+    const receipt = await celerToken.approve(
+      accounts[2],
+      100,
+      {
+        from: accounts[0]
+      }
+    );
+    const { event, args } = receipt.logs[0];
+    assert.equal(event, 'Approval');
+    assert.equal(args.owner, accounts[0]);
+    assert.equal(args.spender, accounts[2]);
+    assert.equal(args.value.toString(), '100');
+    try {
+      await celerToken.transferFrom(
+        accounts[0],
+        accounts[3],
+        100,
+        {
+          from: accounts[2]
+        }
+      );
     } catch (error) {
       err = error;
     }

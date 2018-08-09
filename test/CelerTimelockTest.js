@@ -23,6 +23,15 @@ contract('CelerTimelock', async accounts => {
       celerToken.address,
       accounts[1]
     );
+
+    await celerToken.addAddressesToWhitelist(
+      [celerTimelock.address, celerTimelockNew.address]
+    );
+    let result
+    result = await celerToken.whitelist(celerTimelock.address);
+    assert.equal(result.toString(), 'true');
+    result = await celerToken.whitelist(celerTimelockNew.address);
+    assert.equal(result.toString(), 'true');
   });
 
   it('should be constructed correctly', async () => {
