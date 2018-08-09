@@ -59,15 +59,15 @@ contract CelerTimelock is Ownable {
     token = _token;
     beneficiary = _beneficiary;
 
-    // period 0: at the end of 3rd month, unlock 1/3
+    // stage 0: at the end of 3rd month, unlock 1/3
     lockups[0].lockupTime = 90 days;
     lockups[0].isReleased = false;
     lockups[0].totalDivisor = 3;
-    // period 1: at the end of 6th month, unlock additional 1/3
+    // stage 1: at the end of 6th month, unlock additional 1/3
     lockups[1].lockupTime = 180 days;
     lockups[1].isReleased = false;
     lockups[1].totalDivisor = 3;
-    // period 2: at the end of 9th month, unlock additional 1/3
+    // stage 2: at the end of 9th month, unlock additional 1/3
     lockups[2].lockupTime = 270 days;
     lockups[2].isReleased = false;
     lockups[2].totalDivisor = 3;
@@ -106,7 +106,7 @@ contract CelerTimelock is Ownable {
 
     uint256 releaseTime;
     uint256 finalIndex = lockups.length.sub(1);
-    // check lockup periods except the final one
+    // check lockup stages except the final one
     for (uint256 i = 0; i < finalIndex; i++) {
       releaseTime = startTime.add(lockups[i].lockupTime);
       if (now >= releaseTime && !lockups[i].isReleased) {
@@ -115,7 +115,7 @@ contract CelerTimelock is Ownable {
         lockups[i].isReleased = true;
       }
     }
-    // check the final lockup period
+    // check the final lockup stage
     releaseTime = startTime.add(lockups[finalIndex].lockupTime);
     if (now >= releaseTime && !lockups[finalIndex].isReleased) {
       releasableAmount = unreleasedAmount;
