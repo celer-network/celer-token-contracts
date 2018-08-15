@@ -34,11 +34,13 @@ contract CelerTimelock is Ownable {
   uint256 public startTime;
   uint256 public releasedAmount;
   /** 
-  * 1st stage: at the end of 3rd month, unlock 1/3
-  * 2nd stage: at the end of 6th month, unlock additional 1/3
-  * 3rd stage: at the end of 9th month, unlock additional 1/3
+  * 1st stage: at the end of X-th day, unlock 1/3
+  * 2nd stage: at the end of Y-th day, unlock additional 1/3
+  * 3rd stage: at the end of Z-th day, unlock additional 1/3
+  * note for audit only: X, Y and Z will be hardcoded constant integers in final deployment.
+  * For audit purpose, you may replace them with reasonable integers as long as Z > Y > X > 0.
   */
-  uint256[3] public lockupTimes = [90 days, 180 days, 270 days];
+  uint256[3] public lockupTimes = [X days, Y days, Z days];
   uint256 public constant eachReleaseDivisor = 3;
 
   modifier whenActivated() {

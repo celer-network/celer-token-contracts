@@ -44,21 +44,27 @@ contract CelerCrowdsale is PausableCrowdsale, StagedMaxCapCrowdsale, MinCapCrowd
     /**
      * @dev Constructor, takes individual max cap of first stage and duration of each stage
      * @param _initialMaxCap Max cap of each user in first stage
-     * @param _stageDuration Duration of each stage -> hardcoded as 12 hours
+     * @param _stageDuration Duration of each stage -> hardcoded as X hours
+     * @note for audit only: X will be a hardcoded constant integer in final deployment.
+     * For audit purpose, you may replace it with a reasonable integer like 5, 10, 15 etc.
      */
-    StagedMaxCapCrowdsale(_initialMaxCap, 12 hours)
+    StagedMaxCapCrowdsale(_initialMaxCap, X hours)
     
     /**
      * @dev Constructor, takes minimum amount of wei accepted for each user in the crowdsale.
-     * @param _minCap Min amount of wei to be contributed for each user -> hardcoded as 0.001 ether 
+     * @param _minCap Min amount of wei to be contributed for each user -> hardcoded as Y ether 
+     * @note for audit only: Y will be a hardcoded constant number in final deployment.
+     * For audit purpose, you may replace it with a reasonable number like 0.01, 0.001, 0.0001 etc.
      */
-    MinCapCrowdsale(0.001 ether)
+    MinCapCrowdsale(Y ether)
     
     /**
      * @dev Constructor, takes maximum gas price accepted for each purchase.
-     * @param _maxGasPrice Max gas price for each purchase transaction -> hardcoded as 50000000000 (50 Gwei)
+     * @param _maxGasPrice Max gas price for each purchase transaction -> hardcoded as Z
+     * @note for audit only: Z will be a hardcoded constant integer in final deployment.
+     * For audit purpose, you may replace it with a reasonable integer like 20000000000, 50000000000, 100000000000
      */
-    MaxGasPriceCrowdsale(50000000000)
+    MaxGasPriceCrowdsale(Z)
     
     /**
      * @dev Constructor, takes token wallet address.
