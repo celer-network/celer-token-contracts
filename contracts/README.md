@@ -24,5 +24,9 @@
 
 * openzeppelin-solidity
 
+## Note for audit
+
+In `./CelerCrowdsale.sol` and `./CelerTimelock.sol`, there are some hardcoded numbers which haven't been decided yet or are not ready for release. These numbers are replaced with some mock characters like `X`, `Y` and `Z`, and have descriptive comments before them beginning with `note for audit only:`. You may replace them with reasonable numbers for audit purpose.
+
 ## LICENSE
 You can view our license in `./LICENSE`.
