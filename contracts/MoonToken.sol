@@ -525,12 +525,12 @@ contract PausableToken is StandardToken, Pausable {
 
 
 /**
- * @title CelerToken
- * @dev Celer Network's token contract.
+ * @title MoonToken
+ * @dev Moon Network's token contract.
  */
-contract CelerToken is PausableToken, SuccinctWhitelist {
-  string public constant name = "CelerToken";
-  string public constant symbol = "CELR";
+contract MoonToken is PausableToken, SuccinctWhitelist {
+  string public constant name = "MoonToken";
+  string public constant symbol = "MT";
   uint256 public constant decimals = 18;
 
   // 10 billion tokens with 18 decimals

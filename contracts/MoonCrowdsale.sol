@@ -10,10 +10,10 @@ import "./lib/external/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
 
 /**
- * @title CelerCrowdsale
- * @dev CelerCrowdsale is the crowdsale contract for Celer Network.
+ * @title MoonCrowdsale
+ * @dev MoonCrowdsale is the crowdsale contract for Moon Network.
  */
-contract CelerCrowdsale is PausableCrowdsale, StagedMaxCapCrowdsale, MinCapCrowdsale, MaxGasPriceCrowdsale, SuccinctWhitelistedCrowdsale, AllowanceCrowdsale {
+contract MoonCrowdsale is PausableCrowdsale, StagedMaxCapCrowdsale, MinCapCrowdsale, MaxGasPriceCrowdsale, SuccinctWhitelistedCrowdsale, AllowanceCrowdsale {
   constructor (
     uint256 _rate, 
     address _wallet, 

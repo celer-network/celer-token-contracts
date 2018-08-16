@@ -1,5 +1,5 @@
-var CelerToken = artifacts.require("CelerToken");
+var MoonToken = artifacts.require("MoonToken");
 
 module.exports = function(deployer) {
-  deployer.deploy(CelerToken);
+  deployer.deploy(MoonToken);
 };

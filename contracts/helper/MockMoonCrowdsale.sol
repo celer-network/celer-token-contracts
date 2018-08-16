@@ -1,10 +1,10 @@
 pragma solidity ^0.4.24;
 
-import "../CelerCrowdsale.sol";
+import "../MoonCrowdsale.sol";
 import "../lib/external/openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 
-contract MockCelerCrowdsale is CelerCrowdsale {
+contract MockMoonCrowdsale is MoonCrowdsale {
   using SafeMath for uint256;
 
   constructor(
@@ -20,7 +20,7 @@ contract MockCelerCrowdsale is CelerCrowdsale {
     address _tokenWallet
   )
     public
-    CelerCrowdsale(
+    MoonCrowdsale(
       _rate, 
       _wallet, 
       _token,

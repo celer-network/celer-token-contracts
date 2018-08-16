@@ -1,17 +1,17 @@
 pragma solidity ^0.4.23;
 
-import "../CelerTimelock.sol";
+import "../MoonTimelock.sol";
 import "../lib/external/openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 
-contract MockCelerTimelock is CelerTimelock {
+contract MockMoonTimelock is MoonTimelock {
   using SafeMath for uint256;
 
   constructor(
     ERC20Basic _token,
     address _beneficiary
   )
-    CelerTimelock(_token, _beneficiary)
+    MoonTimelock(_token, _beneficiary)
     public
   {
   }

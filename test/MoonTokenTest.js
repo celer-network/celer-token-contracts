@@ -1,28 +1,28 @@
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 
-const CelerToken = artifacts.require('CelerToken');
+const MoonToken = artifacts.require('MoonToken');
 
-contract('CelerToken', async accounts => {
-  let celerToken;
-  let celerTokenTwo;
+contract('MoonToken', async accounts => {
+  let moonToken;
+  let moonTokenTwo;
 
   before(async () => {
-    celerToken = await CelerToken.new();
-    celerTokenTwo = await CelerToken.new();
+    moonToken = await MoonToken.new();
+    moonTokenTwo = await MoonToken.new();
   });
 
   it('should be constructed correctly', async () => {
-    const name = await celerToken.name();
-    const symbol = await celerToken.symbol();
-    const decimals = await celerToken.decimals();
-    const totalSupply = await celerToken.totalSupply();
-    const ownerBalance = await celerToken.balanceOf(accounts[0]);
-    const transferOpened = await celerToken.transferOpened();
+    const name = await moonToken.name();
+    const symbol = await moonToken.symbol();
+    const decimals = await moonToken.decimals();
+    const totalSupply = await moonToken.totalSupply();
+    const ownerBalance = await moonToken.balanceOf(accounts[0]);
+    const transferOpened = await moonToken.transferOpened();
     const expectedTotalSupply = 1e28; // 10 billion tokens with 18 decimals
     
-    assert.equal(name, 'CelerToken');
-    assert.equal(symbol, 'CELR');
+    assert.equal(name, 'MoonToken');
+    assert.equal(symbol, 'MT');
     assert.equal(decimals.toString(), '18');
     assert.equal(totalSupply.toString(), expectedTotalSupply.toString());
     assert.equal(ownerBalance.toString(), totalSupply.toString());
@@ -30,21 +30,21 @@ contract('CelerToken', async accounts => {
   });
 
   it('should transfer correctly in mathematics', async () => {
-    await celerToken.openTransfer();
-    const transferOpened = await celerToken.transferOpened();
+    await moonToken.openTransfer();
+    const transferOpened = await moonToken.transferOpened();
     assert.equal(transferOpened.toString(), 'true');
 
     const amount = 1e26;
 
-    const previousBalance = await celerToken.balanceOf(accounts[1]);
+    const previousBalance = await moonToken.balanceOf(accounts[1]);
     assert.equal(previousBalance.toString(), '0');
 
-    const result = await celerToken.transfer.call(accounts[1], amount);
+    const result = await moonToken.transfer.call(accounts[1], amount);
     assert.equal(result.toString(), 'true');
 
-    const receipt = await celerToken.transfer(accounts[1], amount);
-    const currentBalance = await celerToken.balanceOf(accounts[1]);
-    const ownerBalance = await celerToken.balanceOf(accounts[0]);
+    const receipt = await moonToken.transfer(accounts[1], amount);
+    const currentBalance = await moonToken.balanceOf(accounts[1]);
+    const ownerBalance = await moonToken.balanceOf(accounts[0]);
     const { event, args } = receipt.logs[0];
     const expectedOwnerBalance = 9.9e27 // 1e28 - amount;
 
@@ -62,19 +62,19 @@ contract('CelerToken', async accounts => {
     let args;
     let ownerBalance;
     const amount = 2e26;
-    const originalOwnerBalance = await celerToken.balanceOf(accounts[0]);
+    const originalOwnerBalance = await moonToken.balanceOf(accounts[0]);
 
-    const previousAllowance = await celerToken.allowance(accounts[0], accounts[2]);
-    const previousBalance = await celerToken.balanceOf(accounts[3]);
+    const previousAllowance = await moonToken.allowance(accounts[0], accounts[2]);
+    const previousBalance = await moonToken.balanceOf(accounts[3]);
     assert.equal(previousAllowance.toString(), '0');
     assert.equal(previousBalance.toString(), '0');
 
-    receipt = await celerToken.approve(accounts[2], amount);
+    receipt = await moonToken.approve(accounts[2], amount);
     event = receipt.logs[0].event;
     args = receipt.logs[0].args;
-    const allowanceAfterApprove = await celerToken.allowance(accounts[0], accounts[2]);
-    const balanceOfSpender = await celerToken.balanceOf(accounts[2]);
-    ownerBalance = await celerToken.balanceOf(accounts[0]);
+    const allowanceAfterApprove = await moonToken.allowance(accounts[0], accounts[2]);
+    const balanceOfSpender = await moonToken.balanceOf(accounts[2]);
+    ownerBalance = await moonToken.balanceOf(accounts[0]);
     assert.equal(event, 'Approval');
     assert.equal(args.owner, accounts[0]);
     assert.equal(args.spender, accounts[2]);
@@ -83,7 +83,7 @@ contract('CelerToken', async accounts => {
     assert.equal(balanceOfSpender.toString(), '0');
     assert.equal(ownerBalance.toString(), originalOwnerBalance.toString());
 
-    receipt = await celerToken.transferFrom(
+    receipt = await moonToken.transferFrom(
       accounts[0],
       accounts[3],
       amount,
@@ -93,10 +93,10 @@ contract('CelerToken', async accounts => {
     );
     event = receipt.logs[0].event;
     args = receipt.logs[0].args;
-    ownerBalance = await celerToken.balanceOf(accounts[0]);
+    ownerBalance = await moonToken.balanceOf(accounts[0]);
     const expectedOwnerBalance = 9.7e27;
-    const currentAllowance = await celerToken.allowance(accounts[0], accounts[2]);
-    const currentBalance = await celerToken.balanceOf(accounts[3]);
+    const currentAllowance = await moonToken.allowance(accounts[0], accounts[2]);
+    const currentBalance = await moonToken.balanceOf(accounts[3]);
 
     assert.equal(event, 'Transfer');
     assert.equal(args.from, accounts[0]);
@@ -109,10 +109,10 @@ contract('CelerToken', async accounts => {
 
   it('should fail to transferFrom without allowed amount', async () => {
     amount = 1e26;
-    await celerToken.approve(accounts[4], amount);
+    await moonToken.approve(accounts[4], amount);
     let err = null;
     try {
-      await celerToken.transferFrom(
+      await moonToken.transferFrom(
         accounts[0],
         accounts[5],
         {
@@ -131,24 +131,24 @@ contract('CelerToken', async accounts => {
     let event;
     let args;
 
-    await celerToken.approve(accounts[4], 2e26);
-    allowance = await celerToken.allowance(accounts[0], accounts[4]);
+    await moonToken.approve(accounts[4], 2e26);
+    allowance = await moonToken.allowance(accounts[0], accounts[4]);
     assert.equal(allowance.toString(), (2e26).toString());
 
-    receipt = await celerToken.increaseApproval(accounts[4], 1e26);
+    receipt = await moonToken.increaseApproval(accounts[4], 1e26);
     event = receipt.logs[0].event;
     args = receipt.logs[0].args;
-    allowance = await celerToken.allowance(accounts[0], accounts[4]);
+    allowance = await moonToken.allowance(accounts[0], accounts[4]);
     assert.equal(event, 'Approval');
     assert.equal(args.owner, accounts[0]);
     assert.equal(args.spender, accounts[4]);
     assert.equal(args.value.toString(), (3e26).toString());
     assert.equal(allowance.toString(), (3e26).toString());
 
-    receipt = await celerToken.decreaseApproval(accounts[4], 2e26);
+    receipt = await moonToken.decreaseApproval(accounts[4], 2e26);
     event = receipt.logs[0].event;
     args = receipt.logs[0].args;
-    allowance = await celerToken.allowance(accounts[0], accounts[4]);
+    allowance = await moonToken.allowance(accounts[0], accounts[4]);
     assert.equal(event, 'Approval');
     assert.equal(args.owner, accounts[0]);
     assert.equal(args.spender, accounts[4]);
@@ -161,7 +161,7 @@ contract('CelerToken', async accounts => {
 
     // should fail to pause
     try {
-      await celerToken.pause(
+      await moonToken.pause(
         {
           from: accounts[1]
         }
@@ -172,9 +172,9 @@ contract('CelerToken', async accounts => {
     assert.isOk(err instanceof Error);
 
     // unpause()
-    await celerToken.pause();
+    await moonToken.pause();
     try {
-      await celerToken.unpause(
+      await moonToken.unpause(
         {
           from: accounts[2]
         }
@@ -183,13 +183,13 @@ contract('CelerToken', async accounts => {
       err = error;
     }
     assert.isOk(err instanceof Error);
-    await celerToken.unpause();
-    const paused = await celerToken.paused();
+    await moonToken.unpause();
+    const paused = await moonToken.paused();
     assert.equal(paused.toString(), 'false');
 
     // addAddressToWhitelist()
     try {
-      await celerToken.addAddressToWhitelist(
+      await moonToken.addAddressToWhitelist(
         accounts[6],
         {
           from: accounts[3]
@@ -202,7 +202,7 @@ contract('CelerToken', async accounts => {
 
     // addAddressesToWhitelist()
     try {
-      await celerToken.addAddressesToWhitelist(
+      await moonToken.addAddressesToWhitelist(
         [accounts[6], accounts[7]],
         {
           from: accounts[4]
@@ -215,7 +215,7 @@ contract('CelerToken', async accounts => {
 
     // removeAddressFromWhitelist()
     try {
-      await celerToken.removeAddressFromWhitelist(
+      await moonToken.removeAddressFromWhitelist(
         accounts[1],
         {
           from: accounts[5]
@@ -228,7 +228,7 @@ contract('CelerToken', async accounts => {
 
     // removeAddressesFromWhitelist()
     try {
-      await celerToken.removeAddressesFromWhitelist(
+      await moonToken.removeAddressesFromWhitelist(
         [accounts[1], accounts[2]],
         {
           from: accounts[6]
@@ -241,7 +241,7 @@ contract('CelerToken', async accounts => {
 
     // should fail to renounceOwnership
     try {
-      await celerToken.renounceOwnership(
+      await moonToken.renounceOwnership(
         {
           from: accounts[2]
         }
@@ -253,7 +253,7 @@ contract('CelerToken', async accounts => {
 
     // should fail to transferOwnership
     try {
-      await celerToken.transferOwnership(
+      await moonToken.transferOwnership(
         accounts[4],
         {
           from: accounts[3]
@@ -271,7 +271,7 @@ contract('CelerToken', async accounts => {
     let args;
     
     // should transfer ownership from accounts[0] to accounts[1] correctly
-    receipt = await celerToken.transferOwnership(
+    receipt = await moonToken.transferOwnership(
       accounts[1],
       {
         from: accounts[0]
@@ -286,7 +286,7 @@ contract('CelerToken', async accounts => {
     // should fail to transfer ownership from accounts[1] to accounts[0]
     let err = null;
     try {
-      await celerToken.transferOwnership(
+      await moonToken.transferOwnership(
         accounts[2],
         {
           from: accounts[0]
@@ -298,7 +298,7 @@ contract('CelerToken', async accounts => {
     assert.isOk(err instanceof Error);
 
     // should transfer ownership from accounts[1] to accounts[0] correctly
-    receipt = await celerToken.transferOwnership(
+    receipt = await moonToken.transferOwnership(
       accounts[0],
       {
         from: accounts[1]
@@ -317,10 +317,10 @@ contract('CelerToken', async accounts => {
     let args;
     let err = null;
 
-    const balance = await celerToken.balanceOf(accounts[1]);
+    const balance = await moonToken.balanceOf(accounts[1]);
     assert.equal(balance.toString(), (1e26).toString());
     
-    receipt = await celerToken.approve(
+    receipt = await moonToken.approve(
       accounts[2],
       200,
       {
@@ -334,7 +334,7 @@ contract('CelerToken', async accounts => {
     assert.equal(args.spender, accounts[2]);
     assert.equal(args.value.toString(), '200');
 
-    receipt = await celerToken.pause(
+    receipt = await moonToken.pause(
       {
         from: accounts[0]
       }
@@ -344,7 +344,7 @@ contract('CelerToken', async accounts => {
 
     // should fail to transfer
     try {
-      await celerToken.transfer(
+      await moonToken.transfer(
         accounts[2],
         100,
         {
@@ -358,7 +358,7 @@ contract('CelerToken', async accounts => {
 
     // should fail to transferFrom
     try {
-      await celerToken.transferFrom(
+      await moonToken.transferFrom(
         accounts[1],
         accounts[3],
         100,
@@ -373,7 +373,7 @@ contract('CelerToken', async accounts => {
 
     // should fail to approve
     try {
-      await celerToken.approve(
+      await moonToken.approve(
         accounts[2],
         100,
         {
@@ -387,7 +387,7 @@ contract('CelerToken', async accounts => {
 
     // should fail to increaseApproval
     try {
-      await celerToken.increaseApproval(
+      await moonToken.increaseApproval(
         accounts[2],
         100,
         {
@@ -401,7 +401,7 @@ contract('CelerToken', async accounts => {
 
     // should fail to decreaseApproval
     try {
-      await celerToken.decreaseApproval(
+      await moonToken.decreaseApproval(
         accounts[2],
         100,
         {
@@ -417,7 +417,7 @@ contract('CelerToken', async accounts => {
   it('should operate correctly after unpause', async () => {
     let err = null;
     try {
-      await celerToken.unpause(
+      await moonToken.unpause(
         {
           from: accounts[1]
         }
@@ -427,7 +427,7 @@ contract('CelerToken', async accounts => {
     }
     assert.isOk(err instanceof Error);
 
-    const receipt = await celerToken.unpause(
+    const receipt = await moonToken.unpause(
       {
         from: accounts[0]
       }
@@ -436,7 +436,7 @@ contract('CelerToken', async accounts => {
     assert.equal(event, 'Unpause');
 
     let result;
-    result = await celerToken.transfer.call(
+    result = await moonToken.transfer.call(
       accounts[2],
       100,
       {
@@ -444,7 +444,7 @@ contract('CelerToken', async accounts => {
       }
     );
     assert.equal(result.toString(), 'true');
-    result = await celerToken.transferFrom.call(
+    result = await moonToken.transferFrom.call(
       accounts[1],
       accounts[3],
       100,
@@ -453,7 +453,7 @@ contract('CelerToken', async accounts => {
       }
     );
     assert.equal(result.toString(), 'true');
-    result = await celerToken.approve.call(
+    result = await moonToken.approve.call(
       accounts[2],
       300,
       {
@@ -461,7 +461,7 @@ contract('CelerToken', async accounts => {
       }
     );
     assert.equal(result.toString(), 'true');
-    result = await celerToken.increaseApproval.call(
+    result = await moonToken.increaseApproval.call(
       accounts[2],
       300,
       {
@@ -469,7 +469,7 @@ contract('CelerToken', async accounts => {
       }
     );
     assert.equal(result.toString(), 'true');
-    result = await celerToken.decreaseApproval.call(
+    result = await moonToken.decreaseApproval.call(
       accounts[2],
       50,
       {
@@ -480,7 +480,7 @@ contract('CelerToken', async accounts => {
   });
 
   /**
-   * Approximate records for celerTokenTwo:
+   * Approximate records for moonTokenTwo:
    * owner: accounts[0]
    * whitelist: accounts[1], accounts[2], accounts[3]
    
@@ -495,20 +495,20 @@ contract('CelerToken', async accounts => {
    * accounts[7]: 3e25
    */
   it('should transfer correctly for owner when transfer not opened', async () => {
-    // pause first celerToken to prevent any further use of this instance by mistake
-    await celerToken.pause();
+    // pause first moonToken to prevent any further use of this instance by mistake
+    await moonToken.pause();
 
     const amount = 1e26;
 
-    const previousBalance = await celerTokenTwo.balanceOf(accounts[1]);
+    const previousBalance = await moonTokenTwo.balanceOf(accounts[1]);
     assert.equal(previousBalance.toString(), '0');
 
-    const result = await celerTokenTwo.transfer.call(accounts[1], amount);
+    const result = await moonTokenTwo.transfer.call(accounts[1], amount);
     assert.equal(result.toString(), 'true');
 
-    const receipt = await celerTokenTwo.transfer(accounts[1], amount);
-    const currentBalance = await celerTokenTwo.balanceOf(accounts[1]);
-    const ownerBalance = await celerTokenTwo.balanceOf(accounts[0]);
+    const receipt = await moonTokenTwo.transfer(accounts[1], amount);
+    const currentBalance = await moonTokenTwo.balanceOf(accounts[1]);
+    const ownerBalance = await moonTokenTwo.balanceOf(accounts[0]);
     const { event, args } = receipt.logs[0];
     const expectedOwnerBalance = 9.9e27 // 1e28 - amount;
 
@@ -526,14 +526,14 @@ contract('CelerToken', async accounts => {
     let args;
     let ownerBalance;
     const amount = 5e25;
-    const originalOwnerBalance = await celerTokenTwo.balanceOf(accounts[1]);
+    const originalOwnerBalance = await moonTokenTwo.balanceOf(accounts[1]);
 
-    const previousAllowance = await celerTokenTwo.allowance(accounts[1], accounts[0]);
-    const previousBalance = await celerTokenTwo.balanceOf(accounts[2]);
+    const previousAllowance = await moonTokenTwo.allowance(accounts[1], accounts[0]);
+    const previousBalance = await moonTokenTwo.balanceOf(accounts[2]);
     assert.equal(previousAllowance.toString(), '0');
     assert.equal(previousBalance.toString(), '0');
 
-    receipt = await celerTokenTwo.approve(
+    receipt = await moonTokenTwo.approve(
       accounts[0], 
       amount,
       {
@@ -542,8 +542,8 @@ contract('CelerToken', async accounts => {
     );
     event = receipt.logs[0].event;
     args = receipt.logs[0].args;
-    const allowanceAfterApprove = await celerTokenTwo.allowance(accounts[1], accounts[0]);
-    ownerBalance = await celerTokenTwo.balanceOf(accounts[1]);
+    const allowanceAfterApprove = await moonTokenTwo.allowance(accounts[1], accounts[0]);
+    ownerBalance = await moonTokenTwo.balanceOf(accounts[1]);
     assert.equal(event, 'Approval');
     assert.equal(args.owner, accounts[1]);
     assert.equal(args.spender, accounts[0]);
@@ -551,7 +551,7 @@ contract('CelerToken', async accounts => {
     assert.equal(allowanceAfterApprove.toString(), amount.toString());
     assert.equal(ownerBalance.toString(), originalOwnerBalance.toString());
 
-    receipt = await celerTokenTwo.transferFrom(
+    receipt = await moonTokenTwo.transferFrom(
       accounts[1],
       accounts[2],
       amount,
@@ -561,9 +561,9 @@ contract('CelerToken', async accounts => {
     );
     event = receipt.logs[0].event;
     args = receipt.logs[0].args;
-    ownerBalance = await celerTokenTwo.balanceOf(accounts[1]);
-    const currentAllowance = await celerTokenTwo.allowance(accounts[1], accounts[0]);
-    const currentBalance = await celerTokenTwo.balanceOf(accounts[2]);
+    ownerBalance = await moonTokenTwo.balanceOf(accounts[1]);
+    const currentAllowance = await moonTokenTwo.allowance(accounts[1], accounts[0]);
+    const currentBalance = await moonTokenTwo.balanceOf(accounts[2]);
 
     assert.equal(event, 'Transfer');
     assert.equal(args.from, accounts[1]);
@@ -577,7 +577,7 @@ contract('CelerToken', async accounts => {
   it('should fail to transfer for non-owner when transfer not opened', async () => {
     let err;
     try {
-      await celerTokenTwo.transfer(
+      await moonTokenTwo.transfer(
         accounts[0],
         100,
         {
@@ -592,7 +592,7 @@ contract('CelerToken', async accounts => {
 
   it('should fail to transferFrom for non-owner when transfer not opened', async () => {
     let err;
-    const receipt = await celerTokenTwo.approve(
+    const receipt = await moonTokenTwo.approve(
       accounts[3],
       100,
       {
@@ -605,7 +605,7 @@ contract('CelerToken', async accounts => {
     assert.equal(args.spender, accounts[3]);
     assert.equal(args.value.toString(), '100');
     try {
-      await celerTokenTwo.transferFrom(
+      await moonTokenTwo.transferFrom(
         accounts[0],
         accounts[1],
         100,
@@ -625,13 +625,13 @@ contract('CelerToken', async accounts => {
     let args;
     
     // address
-    receipt = await celerTokenTwo.addAddressToWhitelist(accounts[1]);
+    receipt = await moonTokenTwo.addAddressToWhitelist(accounts[1]);
     event = receipt.logs[0].event;
     args = receipt.logs[0].args;
     assert.equal(event, 'WhitelistAdded');
     assert.equal(args.operator, accounts[1]);
 
-    receipt = await celerTokenTwo.transfer(
+    receipt = await moonTokenTwo.transfer(
       accounts[3],
       2e25,
       {
@@ -647,7 +647,7 @@ contract('CelerToken', async accounts => {
 
     // addresses
     const addresses = [accounts[2], accounts[3]];
-    receipt = await celerTokenTwo.addAddressesToWhitelist(addresses);
+    receipt = await moonTokenTwo.addAddressesToWhitelist(addresses);
     for (i = 0; i < addresses.length; ++i) {
       event = receipt.logs[i].event;
       args = receipt.logs[i].args;
@@ -655,7 +655,7 @@ contract('CelerToken', async accounts => {
       assert.equal(args.operator, accounts[i+2]);
     }
 
-    receipt = await celerTokenTwo.transfer(
+    receipt = await moonTokenTwo.transfer(
       accounts[4],
       1e25,
       {
@@ -678,17 +678,17 @@ contract('CelerToken', async accounts => {
     let balance;
 
     // address
-    receipt = await celerTokenTwo.approve(accounts[1], 3e25);
+    receipt = await moonTokenTwo.approve(accounts[1], 3e25);
     event = receipt.logs[0].event;
     args = receipt.logs[0].args;
-    allowance = await celerTokenTwo.allowance(accounts[0], accounts[1]);
+    allowance = await moonTokenTwo.allowance(accounts[0], accounts[1]);
     assert.equal(event, 'Approval');
     assert.equal(args.owner, accounts[0]);
     assert.equal(args.spender, accounts[1]);
     assert.equal(args.value.toString(), (3e25).toString());
     assert.equal(allowance.toString(), (3e25).toString());
 
-    receipt = await celerTokenTwo.transferFrom(
+    receipt = await moonTokenTwo.transferFrom(
       accounts[0],
       accounts[5],
       3e25,
@@ -698,7 +698,7 @@ contract('CelerToken', async accounts => {
     );
     event = receipt.logs[0].event;
     args = receipt.logs[0].args;
-    balance = await celerTokenTwo.balanceOf(accounts[5]);
+    balance = await moonTokenTwo.balanceOf(accounts[5]);
     assert.equal(event, 'Transfer');
     assert.equal(args.from, accounts[0]);
     assert.equal(args.to, accounts[5]);
@@ -706,17 +706,17 @@ contract('CelerToken', async accounts => {
     assert.equal(balance.toString(), (3e25).toString());
 
     // addresses
-    receipt = await celerTokenTwo.approve(accounts[3], 3e25);
+    receipt = await moonTokenTwo.approve(accounts[3], 3e25);
     event = receipt.logs[0].event;
     args = receipt.logs[0].args;
-    allowance = await celerTokenTwo.allowance(accounts[0], accounts[3]);
+    allowance = await moonTokenTwo.allowance(accounts[0], accounts[3]);
     assert.equal(event, 'Approval');
     assert.equal(args.owner, accounts[0]);
     assert.equal(args.spender, accounts[3]);
     assert.equal(args.value.toString(), (3e25).toString());
     assert.equal(allowance.toString(), (3e25).toString());
 
-    receipt = await celerTokenTwo.transferFrom(
+    receipt = await moonTokenTwo.transferFrom(
       accounts[0],
       accounts[6],
       3e25,
@@ -726,7 +726,7 @@ contract('CelerToken', async accounts => {
     );
     event = receipt.logs[0].event;
     args = receipt.logs[0].args;
-    balance = await celerTokenTwo.balanceOf(accounts[6]);
+    balance = await moonTokenTwo.balanceOf(accounts[6]);
     assert.equal(event, 'Transfer');
     assert.equal(args.from, accounts[0]);
     assert.equal(args.to, accounts[6]);
@@ -737,7 +737,7 @@ contract('CelerToken', async accounts => {
   it('should fail to transfer for non-whitelisted and non-owner users when transfer not opened', async () => {
     let err;
     try {
-      await celerTokenTwo.transfer(
+      await moonTokenTwo.transfer(
         accounts[0],
         100,
         {
@@ -752,7 +752,7 @@ contract('CelerToken', async accounts => {
 
   it('should fail to transferFrom for non-whitelisted and non-owner users when transfer not opened', async () => {
     let err;
-    const receipt = await celerTokenTwo.approve(
+    const receipt = await moonTokenTwo.approve(
       accounts[5],
       100,
       {
@@ -765,7 +765,7 @@ contract('CelerToken', async accounts => {
     assert.equal(args.spender, accounts[5]);
     assert.equal(args.value.toString(), '100');
     try {
-      await celerTokenTwo.transferFrom(
+      await moonTokenTwo.transferFrom(
         accounts[0],
         accounts[1],
         100,
@@ -786,14 +786,14 @@ contract('CelerToken', async accounts => {
     let err;
 
     // address
-    receipt = await celerTokenTwo.removeAddressFromWhitelist(accounts[1]);
+    receipt = await moonTokenTwo.removeAddressFromWhitelist(accounts[1]);
     event = receipt.logs[0].event;
     args = receipt.logs[0].args;
     assert.equal(event, 'WhitelistRemoved');
     assert.equal(args.operator, accounts[1]);
 
     try {
-      await celerTokenTwo.transfer(
+      await moonTokenTwo.transfer(
         accounts[0],
         100,
         {
@@ -807,7 +807,7 @@ contract('CelerToken', async accounts => {
 
     // addresses
     const addresses = [accounts[2], accounts[3]];
-    receipt = await celerTokenTwo.removeAddressesFromWhitelist(addresses);
+    receipt = await moonTokenTwo.removeAddressesFromWhitelist(addresses);
     for (i = 0; i < addresses.length; ++i) {
       event = receipt.logs[i].event;
       args = receipt.logs[i].args;
@@ -816,7 +816,7 @@ contract('CelerToken', async accounts => {
     }
     
     try {
-      await celerTokenTwo.transfer(
+      await moonTokenTwo.transfer(
         accounts[0],
         100,
         {
@@ -836,7 +836,7 @@ contract('CelerToken', async accounts => {
     
     // address
     let err;
-    receipt = await celerTokenTwo.approve(
+    receipt = await moonTokenTwo.approve(
       accounts[1],
       100,
       {
@@ -850,7 +850,7 @@ contract('CelerToken', async accounts => {
     assert.equal(args.spender, accounts[1]);
     assert.equal(args.value.toString(), '100');
     try {
-      await celerTokenTwo.transferFrom(
+      await moonTokenTwo.transferFrom(
         accounts[0],
         accounts[2],
         100,
@@ -864,7 +864,7 @@ contract('CelerToken', async accounts => {
     assert.isOk(err instanceof Error);
 
     // addresses
-    receipt = await celerTokenTwo.approve(
+    receipt = await moonTokenTwo.approve(
       accounts[3],
       100,
       {
@@ -878,7 +878,7 @@ contract('CelerToken', async accounts => {
     assert.equal(args.spender, accounts[3]);
     assert.equal(args.value.toString(), '100');
     try {
-      await celerTokenTwo.transferFrom(
+      await moonTokenTwo.transferFrom(
         accounts[0],
         accounts[1],
         100,
@@ -893,11 +893,11 @@ contract('CelerToken', async accounts => {
   });
 
   it('should transfer correctly for any user when transfer opened', async () => {
-    await celerTokenTwo.openTransfer();
-    const transferOpened = await celerTokenTwo.transferOpened();
+    await moonTokenTwo.openTransfer();
+    const transferOpened = await moonTokenTwo.transferOpened();
     assert.equal(transferOpened.toString(), 'true');
 
-    receipt = await celerTokenTwo.transfer(
+    receipt = await moonTokenTwo.transfer(
       accounts[0],
       100,
       {
@@ -917,17 +917,17 @@ contract('CelerToken', async accounts => {
     let event;
     let args;
 
-    receipt = await celerTokenTwo.approve(accounts[9], 3e25);
+    receipt = await moonTokenTwo.approve(accounts[9], 3e25);
     event = receipt.logs[0].event;
     args = receipt.logs[0].args;
-    const allowance = await celerTokenTwo.allowance(accounts[0], accounts[9]);
+    const allowance = await moonTokenTwo.allowance(accounts[0], accounts[9]);
     assert.equal(event, 'Approval');
     assert.equal(args.owner, accounts[0]);
     assert.equal(args.spender, accounts[9]);
     assert.equal(args.value.toString(), (3e25).toString());
     assert.equal(allowance.toString(), (3e25).toString());
 
-    receipt = await celerTokenTwo.transferFrom(
+    receipt = await moonTokenTwo.transferFrom(
       accounts[0],
       accounts[7],
       3e25,
@@ -937,7 +937,7 @@ contract('CelerToken', async accounts => {
     );
     event = receipt.logs[0].event;
     args = receipt.logs[0].args;
-    const balance = await celerTokenTwo.balanceOf(accounts[7]);
+    const balance = await moonTokenTwo.balanceOf(accounts[7]);
     assert.equal(event, 'Transfer');
     assert.equal(args.from, accounts[0]);
     assert.equal(args.to, accounts[7]);
@@ -945,11 +945,11 @@ contract('CelerToken', async accounts => {
     assert.equal(balance.toString(), (3e25).toString());
   });
 
-  it('should fail to transfer tokens to Celer Token contract', async () => {
+  it('should fail to transfer tokens to Moon Token contract', async () => {
     let err;
     try {
-      await celerTokenTwo.transfer(
-        celerTokenTwo.address,
+      await moonTokenTwo.transfer(
+        moonTokenTwo.address,
         100,
         {
           from: accounts[0]
@@ -961,9 +961,9 @@ contract('CelerToken', async accounts => {
     assert.isOk(err instanceof Error);
   });
 
-  it('should fail to transferFrom tokens to Celer Token contract', async () => {
+  it('should fail to transferFrom tokens to Moon Token contract', async () => {
     let err;
-    const receipt = await celerTokenTwo.approve(
+    const receipt = await moonTokenTwo.approve(
       accounts[1],
       100,
       {
@@ -976,9 +976,9 @@ contract('CelerToken', async accounts => {
     assert.equal(args.spender, accounts[1]);
     assert.equal(args.value.toString(), '100');
     try {
-      await celerTokenTwo.transferFrom(
+      await moonTokenTwo.transferFrom(
         accounts[7],
-        celerTokenTwo.address,
+        moonTokenTwo.address,
         100,
         {
           from: accounts[1]

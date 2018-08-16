@@ -6,10 +6,10 @@ import "./lib/external/openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 
 /**
- * @title CelerTimelock
- * @dev Token Timelock contract specialized for Celer's angel and private sale rounds.
+ * @title MoonTimelock
+ * @dev Token Timelock contract specialized for Moon's angel and private sale rounds.
  */
-contract CelerTimelock is Ownable {
+contract MoonTimelock is Ownable {
   using SafeERC20 for ERC20Basic;
   using SafeMath for uint256;
 
