@@ -14,7 +14,7 @@ def generate_addresses(n):
     for i in range(n):
         address = generate_one_address(i)
         addresses.append(address)
-    with open('addresses.csv', 'wb') as f:
+    with open('./text/addresses.csv', 'wb') as f:
         writer = csv.writer(f)
         writer.writerow(addresses)
 
@@ -36,8 +36,8 @@ def generate_input(r_path, w_path):
 
 if __name__ == "__main__":
     ADDRESS_NUMBER = 250
-    READ_PATH = './addresses.csv'
-    WRITE_PATH = './array.txt'
+    READ_PATH = './text/addresses.csv'
+    WRITE_PATH = './text/array.txt'
 
     # generate address list
     generate_addresses(ADDRESS_NUMBER)

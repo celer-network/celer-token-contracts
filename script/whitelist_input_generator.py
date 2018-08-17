@@ -21,8 +21,8 @@ def generate_input(r_path, w_path):
 
 
 if __name__ == "__main__":
-    READ_PATH = './addresses.csv'
-    WRITE_PATH = './array.txt'
+    READ_PATH = './text/addresses.csv'
+    WRITE_PATH = './text/array.txt'
 
     # generate the string of address array as an input parameter in remix
     generate_input(READ_PATH, WRITE_PATH)
