@@ -9,12 +9,12 @@ def generate_one_address(n):
     result = '0x' + '0' * (40 - length) + original_str
     return result
 
-def generate_addresses(n):
+def generate_addresses(n, path):
     addresses = []
     for i in range(n):
         address = generate_one_address(i)
         addresses.append(address)
-    with open('./text/addresses.csv', 'wb') as f:
+    with open(path, 'wb') as f:
         writer = csv.writer(f)
         writer.writerow(addresses)
 
@@ -36,10 +36,10 @@ def generate_input(r_path, w_path):
 
 if __name__ == "__main__":
     ADDRESS_NUMBER = 250
-    READ_PATH = './text/addresses.csv'
-    WRITE_PATH = './text/array.txt'
+    READ_PATH = './read/whitelist_addresses.csv'
+    WRITE_PATH = './write/whitelist_array.txt'
 
     # generate address list
-    generate_addresses(ADDRESS_NUMBER)
+    generate_addresses(ADDRESS_NUMBER, READ_PATH)
     # generate the string of address array as an input parameter in remix
     generate_input(READ_PATH, WRITE_PATH)

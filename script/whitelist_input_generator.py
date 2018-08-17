@@ -1,5 +1,7 @@
 # input array of whitelisted addresses generator
 # read from a csv file of whitelisted addresses and generate the array input for remix
+# read file format: "address_1,address_2,...,address_n"
+# write file format: input format of an address array
 
 import csv
 
@@ -21,8 +23,8 @@ def generate_input(r_path, w_path):
 
 
 if __name__ == "__main__":
-    READ_PATH = './text/addresses.csv'
-    WRITE_PATH = './text/array.txt'
+    READ_PATH = './read/whitelist_addresses.csv'
+    WRITE_PATH = './write/whitelist_array.txt'
 
     # generate the string of address array as an input parameter in remix
     generate_input(READ_PATH, WRITE_PATH)
