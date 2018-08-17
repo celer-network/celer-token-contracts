@@ -36,8 +36,8 @@ def generate_input(r_path, w_path):
 
 if __name__ == "__main__":
     ADDRESS_NUMBER = 250
-    READ_PATH = './read/whitelist_addresses.csv'
-    WRITE_PATH = './write/whitelist_array.txt'
+    READ_PATH = './read/mock_whitelist_addresses.csv'
+    WRITE_PATH = './write/mock_whitelist_array.txt'
 
     # generate address list
     generate_addresses(ADDRESS_NUMBER, READ_PATH)
