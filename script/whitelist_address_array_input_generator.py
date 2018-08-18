@@ -1,3 +1,4 @@
+# for general whitelist purpose; not round specified
 # input array of whitelisted addresses generator
 # read from a csv file of whitelisted addresses and generate the array input for remix
 # read file format: "address_1,address_2,...,address_n"

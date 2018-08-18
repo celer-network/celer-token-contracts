@@ -1,4 +1,5 @@
-# input generator for token transfer to timelock contracts
+# angle/private sale rounds
+# input generator for transfering tokens to timelock contracts
 # read file format: each line of "to_address,value"
 # write file format: each line of an input in transfer format
 
@@ -16,8 +17,8 @@ def generate_input(r_path, w_path):
 
 
 if __name__ == '__main__':
-    READ_PATH = './read/angle_private_sale_transfer_tokens_to.csv'
-    WRITE_PATH = './write/angle_private_sale_transfer_tokens_to.txt'
+    READ_PATH = './read/transfer_tokens_to_timelocks.csv'
+    WRITE_PATH = './write/transfer_tokens_to_timelocks.txt'
 
     generate_input(READ_PATH, WRITE_PATH)
     
