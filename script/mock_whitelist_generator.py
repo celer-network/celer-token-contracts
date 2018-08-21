@@ -10,6 +10,7 @@ def generate_one_address(n):
     result = '0x' + '0' * (40 - length) + original_str
     return result
 
+
 def generate_addresses(n, path):
     addresses = []
     for i in range(n):
@@ -18,6 +19,7 @@ def generate_addresses(n, path):
     with open(path, 'wb') as f:
         writer = csv.writer(f)
         writer.writerow(addresses)
+
 
 def generate_input(r_path, w_path):
     with open(r_path, 'rb') as f:

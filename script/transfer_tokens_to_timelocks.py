@@ -5,6 +5,7 @@
 
 import csv
 
+
 def generate_input(r_path, w_path):
     with open(r_path, 'rb') as f:
         reader = csv.reader(f)
@@ -21,4 +22,3 @@ if __name__ == '__main__':
     WRITE_PATH = './write/transfer_tokens_to_timelocks.txt'
 
     generate_input(READ_PATH, WRITE_PATH)
-    
