@@ -4,18 +4,19 @@
 import csv
 
 
+ADDRESS_NUMBER = 250
+READ_PATH = './read/mock_whitelist_addresses.csv'
+WRITE_PATH = './write/mock_whitelist_array.txt'
+
+
 def generate_one_address(n):
     original_str = str(n)
     length = len(original_str)
-    result = '0x' + '0' * (40 - length) + original_str
-    return result
+    return '0x' + '0' * (40 - length) + original_str
 
 
 def generate_addresses(n, path):
-    addresses = []
-    for i in range(n):
-        address = generate_one_address(i)
-        addresses.append(address)
+    addresses = [generate_one_address(i) for i in range(n)]
     with open(path, 'wb') as f:
         writer = csv.writer(f)
         writer.writerow(addresses)
@@ -38,10 +39,6 @@ def generate_input(r_path, w_path):
 
 
 if __name__ == "__main__":
-    ADDRESS_NUMBER = 250
-    READ_PATH = './read/mock_whitelist_addresses.csv'
-    WRITE_PATH = './write/mock_whitelist_array.txt'
-
     # generate address list
     generate_addresses(ADDRESS_NUMBER, READ_PATH)
     # generate the string of address array as an input parameter in remix

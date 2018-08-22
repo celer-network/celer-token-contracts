@@ -8,6 +8,10 @@
 import csv
 
 
+READ_PATH = './read/whitelist_addresses.csv'
+WRITE_PATH = './write/whitelist_array.txt'
+
+
 def generate_input(r_path, w_path):
     with open(r_path, 'rb') as f:
         reader = csv.reader(f)
@@ -25,8 +29,5 @@ def generate_input(r_path, w_path):
 
 
 if __name__ == "__main__":
-    READ_PATH = './read/whitelist_addresses.csv'
-    WRITE_PATH = './write/whitelist_array.txt'
-
     # generate the string of address array as an input parameter in remix
     generate_input(READ_PATH, WRITE_PATH)
