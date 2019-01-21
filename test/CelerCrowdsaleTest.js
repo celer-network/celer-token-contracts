@@ -1,20 +1,21 @@
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+const getBalance = web3.eth.getBalance;
+const toWei = web3.utils.toWei;
 
 const CelerToken = artifacts.require('CelerToken');
 const MockCelerCrowdsale = artifacts.require('MockCelerCrowdsale');
 
+const SECONDS_IN_A_DAY = 60 * 60 * 24;
+
 contract('CelerCrowdsale', async accounts => {
   let celerToken;
   let celerCrowdsale;
-  const getBalance = web3.eth.getBalance;
-  const toWei = web3.utils.toWei;
-  const TOKEN_SALE_AMOUNT = 2e8 * 1e18; // 2e8 CELR tokens for crowdsale
-  const SECONDS_IN_A_DAY = 60 * 60 * 24;
-  const RATE = 100; // 1 ETH = 100 CELR
-  const WALLET = accounts[9]; // the wallet receiving raised ETH
-  const INITIAL_MAX_CAP = toWei('0.5', 'ether');
   const TOKEN_WALLET = accounts[0];
+  const WALLET = accounts[9]; // the wallet receiving raised ETH
+  const RATE = 100; // 1 ETH = 100 CELR
+  const INITIAL_MAX_CAP = toWei('0.5', 'ether');
+  const TOKEN_SALE_AMOUNT = 2e8 * 1e18; // 2e8 CELR tokens for crowdsale
 
   before(async () => {
     celerToken = await CelerToken.deployed();

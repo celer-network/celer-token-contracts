@@ -8,7 +8,7 @@ contract('CelerTimelock', async accounts => {
   let celerToken;
   let celerTimelock;
   let celerTimelockNew;
-  const totalAmount = 1e8 * 1e18;
+  const TOTAL_AMOUNT = 1e8 * 1e18;
   const SECONDS_IN_A_DAY = 60 * 60 * 24;
 
   before(async () => {
@@ -29,13 +29,13 @@ contract('CelerTimelock', async accounts => {
     );
     let result
     result = await celerToken.whitelist(celerTimelock.address);
-    assert.equal(result.toString(), 'true');
+    assert.equal(result, true);
     result = await celerToken.whitelist(celerTimelockNew.address);
-    assert.equal(result.toString(), 'true');
+    assert.equal(result, true);
   });
 
   it('should be constructed correctly', async () => {
-    await celerToken.transfer(celerTimelock.address, totalAmount);
+    await celerToken.transfer(celerTimelock.address, TOTAL_AMOUNT);
 
     const tokenAddress = await celerTimelock.token();
     const beneficiary = await celerTimelock.beneficiary();
@@ -45,9 +45,9 @@ contract('CelerTimelock', async accounts => {
 
     assert.equal(tokenAddress, celerToken.address);
     assert.equal(beneficiary, accounts[1]);
-    assert.equal(isActivated.toString(), 'false');
+    assert.equal(isActivated, false);
     assert.equal(releasedAmount.toString(), '0');
-    assert.equal(unreleasedAmount.toString(), totalAmount.toString());
+    assert.equal(unreleasedAmount.toString(), TOTAL_AMOUNT.toString());
   });
 
   it('should fail to activateNow by a non-owner', async () => {
@@ -72,11 +72,11 @@ contract('CelerTimelock', async accounts => {
         from: accounts[0]
       }
     );
-    assert.equal(result.toString(), 'true');
+    assert.equal(result, true);
 
     let isActivated;
     isActivated = await celerTimelock.isActivated();
-    assert.equal(isActivated.toString(), 'false');
+    assert.equal(isActivated, false);
 
     const receipt = await celerTimelock.activateNow(
       {
@@ -90,7 +90,7 @@ contract('CelerTimelock', async accounts => {
 
     assert.equal(event, 'Activate');
     assert.isOk(timeDifference < 5);
-    assert.equal(isActivated.toString(), 'true');
+    assert.equal(isActivated, true);
     assert.equal(startTime.toString(), args.startTime.toString());
   });
 
@@ -136,7 +136,7 @@ contract('CelerTimelock', async accounts => {
         from: accounts[0]
       }
     );
-    assert.equal(result.toString(), 'true');
+    assert.equal(result, true);
 
     let beneficiary;
     beneficiary = await celerTimelock.beneficiary();
@@ -185,7 +185,7 @@ contract('CelerTimelock', async accounts => {
     });
     const { event, args } = receipt.logs[0];
     beneficiaryBalance = await celerToken.balanceOf(beneficiary);
-    const expectedBalance = Math.floor(totalAmount / 3);
+    const expectedBalance = Math.floor(TOTAL_AMOUNT / 3);
     const releasedAmount = await celerTimelock.releasedAmount();
 
     assert.equal(event, 'NewRelease');
@@ -221,7 +221,7 @@ contract('CelerTimelock', async accounts => {
     });
     const { event, args } = receipt.logs[0];
     const beneficiaryBalanceNew = await celerToken.balanceOf(beneficiary);
-    const expectedNewRelease = totalAmount - beneficiaryBalanceOld;
+    const expectedNewRelease = TOTAL_AMOUNT - beneficiaryBalanceOld;
     const releasedAmount = await celerTimelock.releasedAmount();
     const unreleasedAmount = await celerToken.balanceOf(celerTimelock.address);
 
@@ -230,8 +230,8 @@ contract('CelerTimelock', async accounts => {
     // javascript has different computational precision from solidity, we can't compare directly.
     const difference = args.amount - expectedNewRelease;
     assert.equal(difference.toString(), '0');
-    assert.equal(beneficiaryBalanceNew.toString(), totalAmount.toString());
-    assert.equal(releasedAmount.toString(), totalAmount.toString());
+    assert.equal(beneficiaryBalanceNew.toString(), TOTAL_AMOUNT.toString());
+    assert.equal(releasedAmount.toString(), TOTAL_AMOUNT.toString());
     assert.equal(unreleasedAmount.toString(), '0');
   });
 
@@ -288,11 +288,11 @@ contract('CelerTimelock', async accounts => {
         from: accounts[0]
       }
     );
-    assert.equal(result.toString(), 'true');
+    assert.equal(result, true);
 
     let isActivated;
     isActivated = await celerTimelockNew.isActivated();
-    assert.equal(isActivated.toString(), 'false');
+    assert.equal(isActivated, false);
 
     const receipt = await celerTimelockNew.activateWithTime(
       inputStartTime,
@@ -306,7 +306,7 @@ contract('CelerTimelock', async accounts => {
 
     assert.equal(event, 'Activate');
     assert.isOk(inputStartTime.toString(), args.startTime.toString());
-    assert.equal(isActivated.toString(), 'true');
+    assert.equal(isActivated, true);
     assert.equal(startTime.toString(), inputStartTime.toString());
   });
 
@@ -323,9 +323,9 @@ contract('CelerTimelock', async accounts => {
   });
 
   it('should release correctly after the end of the 2nd lockup stage', async () => {
-    await celerToken.transfer(celerTimelockNew.address, totalAmount);
+    await celerToken.transfer(celerTimelockNew.address, TOTAL_AMOUNT);
     const unreleasedAmount = await celerToken.balanceOf(celerTimelockNew.address);
-    assert.equal(totalAmount.toString(), unreleasedAmount.toString());
+    assert.equal(TOTAL_AMOUNT.toString(), unreleasedAmount.toString());
 
     await celerTimelockNew.timeTravel((11 * 30 + 1) * SECONDS_IN_A_DAY);
 
@@ -341,7 +341,7 @@ contract('CelerTimelock', async accounts => {
     });
     const { event, args } = receipt.logs[0];
     beneficiaryBalance = await celerToken.balanceOf(beneficiary);
-    const expectedBalance = Math.floor(totalAmount * 2 / 3);
+    const expectedBalance = Math.floor(TOTAL_AMOUNT * 2 / 3);
     const releasedAmount = await celerTimelockNew.releasedAmount();
 
     assert.equal(event, 'NewRelease');
@@ -381,7 +381,7 @@ contract('CelerTimelock', async accounts => {
     });
     const { event, args } = receipt.logs[0];
     beneficiaryBalanceNew = await celerToken.balanceOf(beneficiary);
-    const expectedBalance = Math.floor(totalAmount / 3);
+    const expectedBalance = Math.floor(TOTAL_AMOUNT / 3);
     const releasedAmount = await celerTimelockNew.releasedAmount();
 
     assert.equal(event, 'NewRelease');
@@ -390,6 +390,6 @@ contract('CelerTimelock', async accounts => {
     const difference = args.amount - expectedBalance;
     assert.equal(difference.toString(), '0');
     assert.equal(beneficiaryBalanceNew.toString(), args.amount.toString());
-    assert.equal(releasedAmount.toString(), totalAmount.toString());
+    assert.equal(releasedAmount.toString(), TOTAL_AMOUNT.toString());
   });
 });
