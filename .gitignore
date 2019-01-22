@@ -102,6 +102,7 @@ ENV/
 node_modules/
 package-lock.json
 
+contracts/*.backup.sol
 script/read/*
 script/write/*
 
