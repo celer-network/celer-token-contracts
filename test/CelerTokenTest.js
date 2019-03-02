@@ -989,4 +989,41 @@ contract('CelerToken', async accounts => {
     }
     assert.isOk(err instanceof Error);
   });
+
+  it('should transfer correctly when value = 0', async () => {
+    const balanceBefore = await celerTokenTwo.balanceOf(accounts[0]);
+    const receipt = await celerTokenTwo.transfer(
+      accounts[0],
+      0,
+      {
+        from: accounts[4]
+      }
+    );
+    const { event, args } = receipt.logs[0];
+    const balanceAfter = await celerTokenTwo.balanceOf(accounts[0]);
+    assert.equal(event, 'Transfer');
+    assert.equal(args.from, accounts[4]);
+    assert.equal(args.to, accounts[0]);
+    assert.equal(args.value.toString(), 0);
+    assert.equal(balanceBefore.toString(), balanceAfter.toString());
+  });
+
+  it('should transferFrom correctly when value = 0', async () => {
+    const balanceBefore = await celerTokenTwo.balanceOf(accounts[7]);
+    const receipt = await celerTokenTwo.transferFrom(
+      accounts[0],
+      accounts[7],
+      0,
+      {
+        from: accounts[9]
+      }
+    );
+    const { event, args } = receipt.logs[0];
+    const balanceAfter = await celerTokenTwo.balanceOf(accounts[7]);
+    assert.equal(event, 'Transfer');
+    assert.equal(args.from, accounts[0]);
+    assert.equal(args.to, accounts[7]);
+    assert.equal(args.value.toString(), 0);
+    assert.equal(balanceBefore.toString(), balanceAfter.toString());
+  });
 });
