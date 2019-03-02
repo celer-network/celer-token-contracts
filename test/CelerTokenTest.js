@@ -991,6 +991,7 @@ contract('CelerToken', async accounts => {
   });
 
   it('should transfer correctly when value = 0', async () => {
+    const balanceBefore = await celerTokenTwo.balanceOf(accounts[0]);
     const receipt = await celerTokenTwo.transfer(
       accounts[0],
       0,
@@ -999,10 +1000,12 @@ contract('CelerToken', async accounts => {
       }
     );
     const { event, args } = receipt.logs[0];
+    const balanceAfter = await celerTokenTwo.balanceOf(accounts[0]);
     assert.equal(event, 'Transfer');
     assert.equal(args.from, accounts[4]);
     assert.equal(args.to, accounts[0]);
     assert.equal(args.value.toString(), 0);
+    assert.equal(balanceBefore.toString(), balanceAfter.toString());
   });
 
   it('should transferFrom correctly when value = 0', async () => {
