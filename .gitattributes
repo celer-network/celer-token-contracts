@@ -1,2 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Syntax highlighting for Solidity
+*.sol linguist-language=Solidity
+*.sol.import linguist-language=Solidity
