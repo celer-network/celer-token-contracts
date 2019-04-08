@@ -19,9 +19,9 @@ jobs:
           name: run truffle test
           command: |
             npm install && npm install ganache-cli truffle@4.1.14
-            node_modules/.bin/ganache-cli 2> /dev/null 1> /dev/null &
+            node_modules/.bin/ganache-cli 2> /dev/null 1> /dev/null & && GANACHE_PID=$!
             node_modules/.bin/truffle test
-            sudo apt-get install lsof && kill -9 $(lsof -t -i:8545)
+            kill -9 $GANACHE_PID
       - save_cache:
           key: npm-cache-{{ checksum "package-lock.json" }}
           paths:
