@@ -1,0 +1,40 @@
+version: 2
+
+# try to checkout pr merge if it exists, no op if not a pr build
+checkout_pr_merge: &checkout_pr_merge
+  run:
+    name: try to checkout pr merge
+    command: git fetch origin "+refs/pull/${CIRCLE_PULL_REQUEST##*/}/merge" && git checkout -qf FETCH_HEAD || echo "not pr build"
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:11.13.0
+    steps:
+      - checkout
+      - <<: *checkout_pr_merge
+      - restore_cache:
+          key: npm-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: install node_modules if not exists
+          environment:
+            GANACHE_VER: 6.4.2
+            TRUFFLE_VER: 4.1.14
+          command: |
+            if [ ! -d "node_modules" ]; then
+              npm install ganache-cli@$GANACHE_VER truffle@$TRUFFLE_VER --no-shrinkwrap
+              npm install --no-shrinkwrap
+            fi
+      - run:
+          name: run truffle test
+          command: |
+            node_modules/.bin/ganache-cli 2> /dev/null 1> /dev/null &
+            GANACHE_PID=$!
+            # default stack size of this docker environment is not sufficient for
+            # normal "node_modules/.bin/truffle test"
+            node --stack_size=1000000 "./node_modules/truffle/build/cli.bundled.js" test
+            kill -9 $GANACHE_PID
+      - save_cache:
+          key: npm-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - "node_modules"

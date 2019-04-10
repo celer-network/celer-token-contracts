@@ -100,7 +100,6 @@ ENV/
 .mypy_cache/
 
 node_modules/
-package-lock.json
 
 contracts/*.backup.sol
 script/read/*
