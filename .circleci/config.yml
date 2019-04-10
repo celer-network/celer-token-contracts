@@ -27,11 +27,13 @@ jobs:
             fi
       - run:
           name: run truffle test
+          environment:
+            # default stack size of this docker environment is not sufficient
+            LARGE_STACK_TRUFFLE: node --stack_size=1000000 "./node_modules/truffle/build/cli.bundled.js"
           command: |
             node_modules/.bin/ganache-cli 2> /dev/null 1> /dev/null &
             GANACHE_PID=$!
-            # node_modules/.bin/truffle test
-            node --stack_size=1000000 "./node_modules/truffle/build/cli.bundled.js" test
+            $LARGE_STACK_TRUFFLE test
             kill -9 $GANACHE_PID
       - save_cache:
           key: npm-cache-{{ checksum "package-lock.json" }}
