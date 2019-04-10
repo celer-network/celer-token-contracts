@@ -14,16 +14,24 @@ jobs:
       - checkout
       - <<: *checkout_pr_merge
       - restore_cache:
-          key: npm-cache-{{ checksum "package-lock.json" }}
+          # manually tag this key with modification date since we cache
+          # truffle and ganache-cli during tests which will change package.json
+          # remember to update restore_cache key and save_cache key for huge package updates
+          key: npm-cache-04102019
+      - run:
+          name: install npm packages
+          environment:
+            GANACHE_VER: 6.4.2
+            TRUFFLE_VER: 4.1.14
+          command: npm install && npm install ganache-cli@$GANACHE_VER truffle@$TRUFFLE_VER
       - run:
           name: run truffle test
           command: |
-            npm install && npm install ganache-cli truffle@4.1.14
             node_modules/.bin/ganache-cli 2> /dev/null 1> /dev/null &
             GANACHE_PID=$!
             node_modules/.bin/truffle test
             kill -9 $GANACHE_PID
       - save_cache:
-          key: npm-cache-{{ checksum "package-lock.json" }}
+          key: npm-cache-04102019
           paths:
             - "node_modules"
