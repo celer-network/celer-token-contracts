@@ -16,13 +16,15 @@ jobs:
       - restore_cache:
           key: npm-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: install npm packages
+          name: install node_modules if not exists
           environment:
             GANACHE_VER: 6.4.2
             TRUFFLE_VER: 4.1.14
           command: |
-            npm install ganache-cli@$GANACHE_VER truffle@$TRUFFLE_VER --no-shrinkwrap
-            npm install --no-shrinkwrap
+            if [ ! -d "node_modules" ]; then
+              npm install ganache-cli@$GANACHE_VER truffle@$TRUFFLE_VER --no-shrinkwrap
+              npm install --no-shrinkwrap
+            fi
       - run:
           name: run truffle test
           command: |
