@@ -9,7 +9,7 @@ checkout_pr_merge: &checkout_pr_merge
 jobs:
   build:
     docker:
-      - image: circleci/node:11.6.0
+      - image: circleci/node:11.13.0
     steps:
       - checkout
       - <<: *checkout_pr_merge
