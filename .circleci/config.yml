@@ -30,7 +30,8 @@ jobs:
           command: |
             node_modules/.bin/ganache-cli 2> /dev/null 1> /dev/null &
             GANACHE_PID=$!
-            # node_modules/.bin/truffle test
+            # default stack size of this docker environment is not sufficient for
+            # normal "node_modules/.bin/truffle test"
             node --stack_size=1000000 "./node_modules/truffle/build/cli.bundled.js" test
             kill -9 $GANACHE_PID
       - save_cache:
