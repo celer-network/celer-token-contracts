@@ -1,5 +1,3 @@
 # Celer Token Contracts
 
-[![CircleCI](https://circleci.com/gh/celer-network/Ethereum-ICO.svg?style=svg&circle-token=4e039fce637a56450943788acd4a12bd573a81a2)](https://circleci.com/gh/celer-network/Ethereum-ICO)
-
-Ethereum smart contracts for ICO and locked position
+Ethereum smart contracts for [CelerToken (CELR)](https://etherscan.io/address/0x4f9254c83eb525f9fcf346490bbb3ed28a81c667)
