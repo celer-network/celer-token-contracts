@@ -106,3 +106,4 @@ script/read/*
 script/write/*
 
 .vscode/
+.git/
